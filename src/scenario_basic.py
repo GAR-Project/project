@@ -64,6 +64,6 @@ def scenario_basic():
     net.stop()
 
 if __name__ == '__main__':
-    setLogLevel( 'debug' )
+    setLogLevel( 'info' )
     scenario_basic()
 
