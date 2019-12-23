@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt-get update && apt-get install -y git 
+sudo apt-get update && apt-get install -y git hping3
 
 # Clone Mininet Repo
 git clone https://github.com/mininet/mininet
