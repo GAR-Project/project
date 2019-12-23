@@ -1,6 +1,6 @@
 # GAR-Project 2019-2020
 
-   This workgroup is a project created by 4 students of the University of Alcalá for the subject of Network Management and Administration of the fourth year
+   This workgroup is a project created by 4 students of the University of Alcalá for the subject of Network Management and Administration of the fourth year.
 
 <br>
 
