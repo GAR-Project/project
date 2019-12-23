@@ -2,8 +2,12 @@
 
    This workgroup is a project created by 4 students of the University of Alcalá for the subject of Network Management and Administration of the fourth year
 
+<br>
+
 ## Guides (spanish):
 *  Network Scenario - Mininet Guide: [Link](https://hackmd.io/@davidcawork/r1fZC-nRS) 
+
+<br>
 
 ## TODO
 
@@ -16,7 +20,8 @@
  
  * **[Optional]** Knowing if we're under attack, How we can mitigate it? we should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py))
  
- 
+---
+
 ## Installation methods  🔧
 
 For the installation of the scenario, a Vagrant image has been created to which all the shellscripts necessary for the installation/configuration of the scenario are supplied. It has been chosen to have all the same specifications, this way, in case of finding errors we will be able to trace their cause in an easier way. If you do not want to use the Vagrant installation method you can follow the native installation method.
