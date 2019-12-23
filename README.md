@@ -246,10 +246,18 @@ That's why it was decided to take the controller out of this machine where Minin
 
 
 
+---
+## Troubleshooting
 
-### Run tests ⚙️
+* If we use a terminal, without **X server** for example, to reroute the graphical stdout of the virtual machine out, the Miniedit tool will not run. It uses tkinter, it needs the environment variable `$DISPLAY` properly configured. 
 
-_Ejecución de pruebas del proyecto_
+
+* If there are problems when launching the scenario try to clean the previous environment. Normally if we go out with the mininet CLI quit command it should be deleted correctly, otherwise we can always clean it up ourselves:
+```
+sudo mn -c
+```
+![clean](https://i.imgur.com/zRrxiP5.png)
+
 
 ### Authors ✒️
 
@@ -257,7 +265,6 @@ _Ejecución de pruebas del proyecto_
 * **Adrián Guerrero** - [Link github](https://github.com/adrihamel)
 * **Pablo Collado** - [Link github](https://github.com/pcolladosoto)
 * **Artem Strilets** - [Link github](https://github.com/ArtemSSOO)
-
 
 
 ### Wiki 📖
