@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+# encoding: UTF-8
 
 VAGRANTFILE_API_VERSION = "2"
 
