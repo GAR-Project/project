@@ -12,52 +12,61 @@
 ## TODO
 
  * ~~Setting up a network scenario with Mininet.~~ :heavy_check_mark:
- * ~~Choice of tools to recreate the DDoS attack.~~  (**ping y hping3**) :heavy_check_mark:
- * Run telegraf on the 'test' machine, and on the 'control' machine InfluxDB and Grafana.
- * Using the InfluxDB interface ([Python API](https://github.com/influxdata/influxdb-python)) create a script that implements an AI algorithm that classifies whether we are under a DDoS attack or in a normal traffic situation.
+ * ~~Choice of tools to recreate the DDoS attack.~~ -> **ping y hping3** :heavy_check_mark:
+ * Run telegraf on the 'test' machine. Run InfluxDB and Grafana on the 'control' machine.
+ * Using InfluxDB's interface ([Python API](https://github.com/influxdata/influxdb-python)) create a script that implements an AI algorithm that deterrmines whether we are under a DDoS attack or in a normal traffic situation through classification.
         
  * See how we can import the output of the script that decides if a DDos is running into the Grafana dashboard, to reflect it generate alarms and so on.
  
- * **[Optional]** Knowing if we're under attack, How we can mitigate it? we should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py))
+   **IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :thinking_face:
  
+ * **[Optional]** Knowing if we're under attack, How we can mitigate it? We should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py)) and try to take action from there.
+ 
+<br>
+
+---
+
+## Notes
+Throughout the document we will always be talking about 2 virtual machines (VMs) on which we implement the scenario we are discussing. In order to keep it simple we hace called one VM **controller** and the other one **mininet**. Even though the names may seem kind of random at the moment we promise they're not. Just keep this in mind as you continue reading.
+
 <br>
 
 ---
 
 ## Installation methods  🔧
 
-For the installation of the scenario, a Vagrant image has been created to which all the shellscripts necessary for the installation/configuration of the scenario are supplied. It has been chosen to have all the same specifications, this way, in case of finding errors we will be able to trace their cause in an easier way. If you do not want to use the Vagrant installation method you can follow the native installation method.
+We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. Working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing erros becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
 
 ### Vagrant
-We make a clone of the repository:
+First of all, clone the repository from GitHub :octocat: and navigate into the new directory with:
 ```bash
 git clone https://github.com/GAR-Project/project
 cd project
 ```
-We power up the virtual machine:
+We power up the virtual machine through **Vagrant**:
 ```bash
 vagrant up
 ```
 
-And we have to connect to both machines:
+And we have to connect to both machines. **Vagrant** provides a wrapper for the *SSH* utility that makes it a breeze to get into each virtual machine. The syntax is just `vagrant ssg <machine_name>` where the `<machine_name>` is given in the **Vagrantfile** (see the [appendix](#appendix)):
 ```bash
 vagrant ssh test
 vagrant ssh controller
 ```
 
-We should already have all the machines configured with all the necessary tools to raise our network scenario with Mininet on the VM **test**, and Ryu on the VM **controller**.
+We should already have all the machines configured with all the necessary tools to bring our network up with Mininet on the **test** VM, and Ryu on the **controller** VM .
 
-#### Troubleshooting - ssh connection
-If you have problems connecting via ssh to the machine, check that the keys in the path `.vagrant/machines/test/virtualbox/` are owned by the user, and have read-only permissions for the owner of the key. 
+#### Troubleshooting problems regarding SSH
+If you have problems connecting via SSH to the machine, check that the keys in the path `.vagrant/machines/test/virtualbox/` are owned by the user, and have read-only permissions for the owner of the key. 
 
 ``` bash
 cd .vagrant/machines/test/virtualbox/
 chmod 400 private_key
 
-# We can also do this (u,g,o -> user, group, others)
-chmod u=r,go= private_key
+# We could also use this instead of "chmod 400" (u,g,o -> user, group, others)
+# chmod u=r,go= private_key
 ```
-Instead of using the vagrant manager to make the ssh connection, we can ultimately make the connection ourselves by entering the path to the private key. For example:
+Instead of using vagrant's manager to make the SSH connection, we can opt for manually doing it ourselves by passing the path to the private key to SSH. For example:
 
 ```bash
 ssh -i .vagrant/machines/test/virtualbox/private_key vagrant@10.0.123.2
@@ -66,59 +75,73 @@ ssh -i .vagrant/machines/test/virtualbox/private_key vagrant@10.0.123.2
 ---
 
 ### Native
-As it is a native installation it is understood that the user has the virtual machine already pre-configured. Ideally there should be two VMs to separate the controller from the VM where the network topology will be emulated. Try to use a Ubuntu 16.04 distribution.
+This method assumes you already have any VMs up and running with the correct configuration and dependencies installed. Ideally you should have 2 VMs. We will be running **Ryu** (the *SDN* controller) in one of them and we will have **mininet**'s emulated network with running in the other one. Try to use Ubuntu 16.04 (a.k.a **Xenial**) as the VM's distribution to avoid any mistakes we may have not encountered.
 
-We make a clone of the repository:
+First of all clone the repository, just like how the Kaminoans do it and then navigate into it:
 ```bash
 git clone https://github.com/GAR-Project/project
 cd project
 ```
 
-We launched the provisioning shellscript, each on its own machine:
+Manually launch the provisioning script in each machine:
 ```bash
-# To install Mininet and Mininet dep
+# To install Mininet and Mininet's dependencies. Run it on the "mininet" VM
 sudo ./util/provisioning.sh
 
-# To install Ryu
+# To install Ryu. Run it on the "controller" VM
 sudo ./util/ryu.sh
-
 ```
 
 ---
 
 ## Our scenario
-Our network scenario is described in the script [`src/scenario_basic.py`](https://github.com/GAR-Project/project/blob/master/src/scenario_basic.py). Mininet makes use of a Python API to give users the ability to automate processes easily, or to develop certain modules at their convenience. For this and many other reasons, Mininet is a highly flexible and powerful tool for network emulation (widely used by the scientific community). 
+Our network scenario is described in the following script: [`src/scenario_basic.py`](https://github.com/GAR-Project/project/blob/master/src/scenario_basic.py). Mininet makes use of a Python API to give users the ability to automate processes easily, or to develop certain modules at their convenience. For this and many other reasons, Mininet is a highly flexible and powerful tool for network emulation which is widely used by the scientific community. 
 
 * For more information about the API, see its [manual](http://mininet.org/api/annotated.html).
 
 
-![Escenario](https://i.imgur.com/kH7kAqB.png)
+<!--![Escenario](https://i.imgur.com/kH7kAqB.png)-->
+<!-- Using HTML let's us center images! It's kind of dirty though... -->
+<p align="center">
+    <img src="https://i.imgur.com/kH7kAqB.png">
+</p>
 
-For this scenario, the controller has been separated into a virtual machine and the network core into another virtual machine. In Mininet we identify the controller, **Ryu**, by the IP of the virtual machine within the VirtualBox private network and its listening port. This separation into two different machines is due to the following:
+The image above presents us with the *logic* scenario we will be working with. As with many other areas in networking this logic picture doesn't correspond with the real implementation we are using. We have seen throughout the installation procedure how we are always talking about 2 VMs. If you read carefully you'll see that one VM's "names" are **controller** and **mininet**. So it should come as no surprise that the controller and the network itself are living in different machines!
 
+The first question that may arise is how on Earth can we logically join these 2 together. When working with virtualized enviroments we will generate a virtual LAN where each VM is able to communicate with one another. Once we stop thinking about programs and abstract the idea of "*process*" we find that we can easily identify the **controller** which is just a **ryu** app, which is nothing more than a **python3** app with the **controller**'s VM **IP** address and the port number where the **ryu** is listening. We shouldn't forget that **any** process running within **any** host in the entire **Internet** can be identified with the host's **IP** address and the processes **port** number. Isn't it amazing?
 
-* Facilitate teamwork, since the **logic with AI** will go directly into the controller's MV. In this way the integration of teamwork will be easier, making the Mininet core + data collection (**telegraf**) independent from the DDoS attack detection logic, visualization (**Grafana** + **InfluxDB**). 
+Ok, the above sounds great but... Why should we let the controller live in a machine when we could have everything in a single machine and call it a day? We have our reasons:
 
-* Facilitate the storage of data to InfluxDB from telegraf, as due to the internal workings of Mininet there may be conflicts in the communication of this data. The basic operation of Mininet at a low level will be detailed below.
+* Facilitate teamwork, since the **AI's logic** will go directly into the controller's VM. This let's us increase both working group's independence. One may work on the mininet core and the data collection with **telegraf** whilst the other can look into the DDoS attack detection logic and visualization using **Grafana** and **InfluxDB**. 
 
-* By separating in two machines with clearly differentiated functionalities it is possible to make debug in a simpler way since we will be able to identify in a clear way which of these modules (Mininet Core, Controller) give problems.
+* Facilitate the storage of data into **InfluxDB** from **telegraf**, as due to the internal workings of Mininet there may be conflicts in the communication of said data. Mininet's basic operation at a low level is be detailed below.
 
-### How to run our scenario
-To run our scenario we must be connected with uan end to the virtual machine `test` and the virutal machine `controller`. First of all we're going to power up the controller, to do this from the controller machine we run the following, it's an application that does a basic forwarding, which is what we need:
+* Having two different environments relying on distinct tools and implementing different functionalities let's us identify and debug problems way faster. We can know what piece of software is causing problems right away!
 
+### Running the scenario
+Running the scenario requires having logged into both VMs manually or using vagrant's SSH wrapper. First of all we're going to power up the controller, to do so we run the following from the `controller` VM. It's an application that does a basic forwarding, which is just what we need:
 
 ```
 ryu-manager ryu.app.simple_switch_13
 ```
-![ryu_up](https://i.imgur.com/EGyKHLT.png)
 
-Once the controller is up we are going to execute the core of the network, to do this from the 'test' machine we are going to launch the above mentioned scritp:
+<!--![ryu_up](https://i.imgur.com/EGyKHLT.png)-->
 
+<p align="center">
+    <img src="https://i.imgur.com/EGyKHLT.png">
+</p>
+
+Once the controller is up we are going to execute the network itself, to do this from the `test` machine we are going to launch the aforementioned mentioned script:
 
 ```
 sudo python3 scenario_basic.py
 ```
-![mininet_up](https://i.imgur.com/DSPsPDL.png)
+
+<!--![mininet_up](https://i.imgur.com/DSPsPDL.png)-->
+
+<p align="center">
+    <img src="https://i.imgur.com/DSPsPDL.png">
+</p>
 
 You can also see that from our test machine we have opened the so-called **CLI of Mininet**. It is a command line interface from which you can do many actions. The most useful one will be detailed below.
 
@@ -265,6 +288,8 @@ sudo mn -c
 ```
 ![clean](https://i.imgur.com/zRrxiP5.png)
 
+## Appendix <a name="appendix"></a>
+
 
 ### Authors ✒️
 
@@ -276,4 +301,4 @@ sudo mn -c
 
 ### Wiki 📖
 
-_Fuentes del proyecto_
+*Fuentes del proyecto*
