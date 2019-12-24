@@ -15,6 +15,8 @@ def scenario_basic():
 
     net = Mininet( topo=None,
                    build=False,
+		   host=CPULimitedHost,
+		   link=TCLink,
                    ipBase='10.0.0.0/8')
 
     info( '*** 	Add Controller (Ryu) ***\n' )
@@ -38,14 +40,14 @@ def scenario_basic():
     h5 = net.addHost('h5', cls=Host, ip='10.0.0.5', defaultRoute=None)
 
     info( '*** Add links ***\n')
-    net.addLink(s1, h1)
-    net.addLink(s1, h2)
-    net.addLink(s1, s2, bw=10)
-    net.addLink(s3, s1, bw=10)
-    net.addLink(s2, h3)
-    net.addLink(s2, h4)
-    net.addLink(s3, h5)
-    net.addLink(s3, h6)
+    net.addLink(s1, h1, bw=10)
+    net.addLink(s1, h2, bw=10)
+    net.addLink(s1, s2, bw=5, max_queue_size=500)
+    net.addLink(s3, s1, bw=5, max_queue_size=500)
+    net.addLink(s2, h3, bw=10)
+    net.addLink(s2, h4, bw=10)
+    net.addLink(s3, h5, bw=10)
+    net.addLink(s3, h6, bw=10)
 
     info( '*** build ***\n')
     net.build()
