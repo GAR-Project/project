@@ -48,7 +48,7 @@ We power up the virtual machine through **Vagrant**:
 vagrant up
 ```
 
-And we have to connect to both machines. **Vagrant** provides a wrapper for the *SSH* utility that makes it a breeze to get into each virtual machine. The syntax is just `vagrant ssg <machine_name>` where the `<machine_name>` is given in the **Vagrantfile** (see the [appendix](#appendix)):
+And we have to connect to both machines. **Vagrant** provides a wrapper for the *SSH* utility that makes it a breeze to get into each virtual machine. The syntax is just `vagrant ssh <machine_name>` where the `<machine_name>` is given in the **Vagrantfile** (see the [appendix](#appendix)):
 ```bash
 vagrant ssh test
 vagrant ssh controller
