@@ -316,8 +316,8 @@ sudo mn -c
 </p>
 
 ## Appendix <a name="appendix"></a>
-TODO: Talk about the Vagrantfile
-TODO: Talk about file descriptors (stdout)
+* TODO: Talk about the Vagrantfile
+* TODO: Talk about file descriptors (stdout)
 
 
 ### Authors :black_nib:
