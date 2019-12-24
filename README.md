@@ -125,58 +125,65 @@ Running the scenario requires having logged into both VMs manually or using vagr
 ryu-manager ryu.app.simple_switch_13
 ```
 
-<!--![ryu_up](https://i.imgur.com/EGyKHLT.png)-->
+<!-- ![ryu_up](https://i.imgur.com/EGyKHLT.png) -->
 
 <p align="center">
     <img src="https://i.imgur.com/EGyKHLT.png">
 </p>
 
-Once the controller is up we are going to execute the network itself, to do this from the `test` machine we are going to launch the aforementioned mentioned script:
+Once the controller is up we are going to execute the network itself, to do so launch the aforementioned script from the `test` machine:
 
 ```
 sudo python3 scenario_basic.py
 ```
 
-<!--![mininet_up](https://i.imgur.com/DSPsPDL.png)-->
+<!-- ![mininet_up](https://i.imgur.com/DSPsPDL.png) -->
 
 <p align="center">
     <img src="https://i.imgur.com/DSPsPDL.png">
 </p>
 
-You can also see that from our test machine we have opened the so-called **CLI of Mininet**. It is a command line interface from which you can do many actions. The most useful one will be detailed below.
+Notice how we have opened **Mininet CLI** from the `test` machine. We can perform many actions from this command line interface. The most useful ones are detailed below.
 
 ### Is working properly?
-We'd have our operational scenario by now. We can check our network connectivity by pinging the hosts, for example:
+We should have our scenario working as intended by now. We can check our network connectivity by pinging the hosts, for example:
 
 ``` bash
 mininet> h1 ping h3
-
 
 # We can also ping each other with the pingall command
 mininet> pingall
 ```
 
-![ping_basic](https://i.imgur.com/NhglFK5.png)
+<!-- ![ping_basic](https://i.imgur.com/NhglFK5.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/NhglFK5.png">
+</p>
+
+As you can see in the image above, there is full connectivity in our scenario. You may have noticed how the first **ping** takes way longer than the other to get back to use. That is, its **RTT** (**R**ound **T**rip **T**ime) is abnormally high. This is due to the empty **ARP** tables we currently have *AND* to the fact that we don't yet have a flow defined to handle **ICMP** traffic:
+
+* An **ARP** resolution between sender and receiver of the ping takes place so that the sender learns the next hop's **MAC** address.
+
+* In addition, the **ICMP** message (ping-request) will be redirected to the driver (a.k.a controller) to decide what to do with the packet as the switches don't yet have a **flow** to handle this traffic type. This way the controller will, when it receives the packet, instantiate a set of rules on the switches so that the **ICMP** messages are routed from one host to the other.
+
+<!-- ![ryu_packet_in](https://i.imgur.com/lSGDeTN.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/lSGDeTN.png">
+</p>
+
 <br>
-As you can see in the image above, there is full connectivity in our scenario. As a curiosity, **Why does it take so long for the first ping message?** , it is normal, we have to take into account that the first ping message before being transmitted must be done the following actions:
 
-* ARP resolution between sender and receiver of the ping, in order to obtain the MACs and form the packets. 
-
-* In addition, the ICMP (ping-request) package will be redirected to the driver to decide what to do with the package, as it does not have a specified **Flow** with a rule set on the switches through which the ping-request and ping-reply will pass. This way the controller will, when it receives the packet, instantiate a set of rules on the switches so that the ICMP packet is routed from one host to another.
-
-![ryu_packet_in](https://i.imgur.com/lSGDeTN.png)
-
-<br>
-
-As you can see, in the stdout of the controller, it indicates the commands it has been instantiating according to the packages it has processed. In the end, for the first package you will have to assume a delay due to ARP resolution and rule resolution with the controller. But the rest of the packets will already have the destination MAC and the rules instantiated in the intermediate switches, so their delay time will be minimal.
+As you can see, the controller's **stdout** (please see the [appendix](#appendix) to learn more about file descriptors) indicates the commands it has been instantiating according to the packets it has processed. In the end, for the first packet we will have to tolerate a delay due to **ARP** resolution and **flow** lookup and instantiation within the controller. The good thing is the rest of the packets will already have the destination **MAC** and the rules will already instantiated in the intermediate switches, so the new delay will be minimal.
 
 ---
 
 ## Mininet CLI 
-We've already set up our scenario and verified that it's working properly. We will now detail the most important commands of Mininet's CLI.
+We've already set up our scenario and verified that it's working properly. We will now detail the most important commands we can issue from of **Mininet's CLI**.
 
 ### Command: EOF + quit + exit
-These three commands are used for the same thing, to exit the Mininet CLI and finish the emulation. The source code of these three commands do not differ much, **EOF** and **quit** end up using exit at the end, so we could say that they are a bit repetitive.
+These three commands are used for the same thing, to exit the **Mininet CLI** and finish the emulation. The source code of these three commands does not differ much, **EOF** and **quit** end up using the `do_exit` function at the end, so we could say that they are a bit repetitive. They offer several ways to kill the emulation so that people with different backgrounds feel "at `~`". The source code taking care of exiting is:
 
 ```python
 def do_exit( self, _line ):
@@ -195,44 +202,53 @@ def do_EOF( self, line ):
 ```
 
 ### Command: dpctl
-The **dpctl** command is a management utility command that allows some control over the OpenFlow switch (ovs-ofctl on the OpenvSwitch). With this command it is possible to add flows to the flow table, check the features and status of the switches or clean the table among many other things. For example, previously we made a ping between **h1** to **h3**, if we consult the flow tables we will be able to check how the rules have been instantiated for this type of flows:
+The **dpctl** command is a management utility that allows some control over the OpenFlow switch (ovs-ofctl on the OpenvSwitch). This tool lets us add flows to the flow table, check the features and status of the switches or clean the table among many other things. For example, recall how we previously made a ping between **h1** and **h3**. If we consult the flow tables we will be able to check how the rules for handling **ICMP** flows have been instantiated:
 
-![dpctl](https://i.imgur.com/1N3yQm8.png)
+<!-- ![dpctl](https://i.imgur.com/1N3yQm8.png) -->
 
-You can see how a rule has been urged to go and return in those switches through which our ping fluctuates.
+<p align="center">
+    <img src="https://i.imgur.com/1N3yQm8.png">
+</p>
 
-This command is very extensive, and it may not be completely necessary for what we are going to do in this practice, but it is undoubtedly one of the most important commands to understand the internal workings of SDN switches. For more information, consult its documentation:
+Note how in the first and third switches we have 3 flow instead of the default one that let's us communicate with the controller. On top of that, take a closer look at the third switch and notice how the input and output ports for the first flow are 3 and 1 respectively. The second rule has the exact opposite distribution: the input port is 1 and the output is port 3. This setup let's us establish a communication link through this switch between any machines hooked to port's 1 and 3. These are the rules the controller has automagically set for us!
 
-*    [OpenvSwitch](http://www.openvswitch.org/support/dist-docs/ovs-ofctl.8.txt)
-
+This command is quite complex and powerful, and it may not be completely necessary for what we are going to do in this practice. It is nevertheless undoubtedly one of the most important commands to understand the internal workings of **SDN** switches. For more information, we encourage you to take a look at the documentation over at [OpenvSwitch](http://www.openvswitch.org/support/dist-docs/ovs-ofctl.8.txt).
 
 ### Command: dump + net
-These commands will give us information about the emulated topology. The command **net** will indicate the names of the entities in the topology to be emulated and their interfaces. The **dump** command will also indicate the type of entity, IP address, port when applicable, interface and the process identifier (pid) of the entity.
+These commands will give us information about the emulated topology. The **net** command will indicate the names of the entities in the emulated topology as well as their interfaces. The **dump** command will also indicate the type of entity, its **IP** address, port when applicable, interface and the entitie's process identifier (**PID**).
 
-![dump](https://i.imgur.com/ysCDTE5.png)
+<!-- ![dump](https://i.imgur.com/ysCDTE5.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/ysCDTE5.png">
+</p>
 
 ### Command: xterm + gterm
-
-These two commands will allow us to open terminals in the indicated node. The command **xterm** will allow us to open a simple terminal, and the command **gterm** will allow us to open a gnome-terminal. We can open several terminals at once by indicating all the nodes we want to open a terminal in. Later, when we enter the inner workings of Mininet, some details will be explained about where this bash process is running. You might think that this process is isolated from the machine on which you are running Mininet, but this is not entirely the case.
+These two commands will allow us to open terminal emulators in the node identified by the accompanying argument. The command **xterm** will allow us to open a simple **XTERM** (the default terminal emulator for the **X** windows system) terminal emulator, and **gterm** launches a prettier but more resource hungry **Gnome terminal**. We can open several terminals at once by indicating all the nodes we want to open a terminal in. Later, when we discuss the inner workings of **Mininet**, we'll talk a bit more about where the **bash** process attached to the terminal emulator is running. You might think that this process is totally isolated from the machine on which you are running **Mininet**, but this is not entirely the case...
 
 ```bash
 # xterm/gterm [node1] [node2]
-
 xterm h1 h6
 ```
 
-![xterm](https://i.imgur.com/YkSj6QB.png)
+<!-- ![xterm](https://i.imgur.com/YkSj6QB.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/YkSj6QB.png">
+</p>
 
 
 ### Command: nodes + ports + intfs
+These commands will list information related to the nodes in the topology. The **intfs** command will list all information related to the nodes' interfaces. The  **nodes** command will show every node in the topology. Finally, the **ports** command is used to list the ports and interfaces of the switches in the topology.
 
-These commands will list information related to the nodes in the topology. The command **intfs** will list all information related to the nodes' interfaces. The command **nodes** will list all nodes in the topology. Finally, the command **ports**, used to list the ports and interfaces of the switches in the topology.
+<!-- ![intfs](https://i.imgur.com/9qNNYy1.png) -->
 
-![intfs](https://i.imgur.com/9qNNYy1.png)
+<p align="center">
+    <img src="https://i.imgur.com/9qNNYy1.png">
+</p>
 
-### Command: The rest of the commands :smirk: 
-
-Look at it in with the **help** command, or else ask me directly, I didn't want this part to grow too much. With the above commands it is understood that all the needs of the project will be covered.
+### Command: The rest of the commands :smirk:
+Someone once told me **manpages** were my friends. This doesn't apply here directly but you get the idea. If you don't know what a command does try running it without arguments and you will be presented with a help section hopefully. If your machine blows up... It wasn't our fault! (It really should't though :ok_woman:). You can also issue `help <command_name>` from the **mininet CLI** to gather more intel. You can also contact us directly. We didn't want this section to grow too large and we believe the above commands are more than enough for our purposes.
 
 <br>
 
@@ -242,61 +258,74 @@ Look at it in with the **help** command, or else ask me directly, I didn't want 
 
 ## Mininet Internals
 
-As previously mentioned, Mininet is a tool used to emulate SDN networks. I stress that it is important to know the difference between **emulation** and **simulation**. With the simulation we will use a software that calculates events of an expected behavior, and with the emulation, we recreate the whole scenario in a specific hardware and see how it behaves. To see it in a simpler way, we could say that playing an airplane videogame would be a simulation. But for example, practicing in a 1:1 scale flight deck with real controls could be considered an emulation.
+We have been covering **Mininet** fow a while now but... What is exactly **Mininet**? It is a tool used for emulating **SDN** (**S**oftware **D**efined **N**etworks). We can write software programs describing the network topology we want and then run them to create a virtual network just like the one we described. Cool right?
 
-![emulación](https://i.imgur.com/Pwr6MHb.jpg)
+Now, notice how we used the term **emulation** instead of **simulation**. Even though many people regard these terms as equivalent they are **NOT** the same. When we talk about **simulation** we are referring to software that computes the outcome of an event given an expected behaviour. On the other hand, **emulation** recreates the scenario under study in its entirety on specific hardware to then study its behaviour.
+
+An example to differentiate the two could be to think about a plane cockpit. If we were to play a videogame like **Flight Simulator** we would be simulating (no surprise) the flight but if we were to practice using a 1:1 scale with real controls we would then be talking about emulation.
+
+<!-- ![emulación](https://i.imgur.com/Pwr6MHb.jpg) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/Pwr6MHb.jpg">
+</p>
 
 
-Once we understand the difference, let's move on to the next step. **Mininet Emulates?** Yes, Mininet emulates the behavior of a network by reserving resources on your machine for each element of the network to be emulated. You might think that each network element is a virtual machine or a virtualized container...
+With this little detail out of the way we could ask ourselves. Does **mininet** emulate or simulate a network?. It is a network **emulator**, here's why. Mininet resrves system resources for each node in the **emulated** network. You might think these nodes are "just" VMs or virtualized containers but... they're not. That solution would have many advantages but it wouldn't scale to be able to **emulate** large networks or huge ammounts of traffic as it would exhaust the host system's resources... The Mininet developers then chose to **exclusively virtualize** what was necessary to carry out the desired **network emulation**.
 
-But it is not, that solution although it has many advantages since it completely assimilates the node, it has a very important contra which is the resources that would be used in the host machine. So, for example, we would not be able to emulate a fairly large network on a single machine due to lack of resources. The solution that the Mininet developers chose was to **virtualize exclusively** what was necessary to perform the **network emulation**.
-
-How did they do it? By using the Network Namespaces.
+How did they do it? By using the **Network Namespaces**.
 
 <br>
 
 ### Network Namespaces
 
-A **network namespace** consists of a logical network stack replica that by default has the Linux kernel, paths, ARP tables, Iptables and network interfaces.
+A **network namespace** consists of a logical network stack replica that by default is composed of the **Linux kernel**, paths, **ARP** tables, **Iptables** and network interfaces.
 
-Linux starts with a default Network namespace, with its routing table, with its ARP table, with its Iptables and network interfaces. But it is also possible to create more non-default network namespaces, create new devices in those namespaces, or move an existing device from one namespace to another. This is a rather complex virtualization concept provided by the linux kernel, I will not go further :fearful:.
+Linux starts with a default **Network namespace** which is the one everyday users need for example. This namespace includes a routing table, an ARP table, the Iptables and any network interfaces it might need. The key here is that it is also possible to create more non-default network namespaces. We can then create new devices in those namespaces, or move an existing devices from one namespace to another. This is a rather complex virtualization concept provided by the Linux kernel and we will not delve any further. It is quite interesting if you ask us though... :fearful:
 
-In this way, each network element has its own network namespace, i.e. each element has its own network stack and interfaces. So at the networking level, as you would say, they can be seen as independent elements. 
+In this way, each network element has its own network namespace, i.e. each element has its own network stack and interfaces. So at the networking level, one could say, they are independent elements. The key is that every node shares the same process namespace, IPCs namespace, filesystem... We are virtualizing up to the network layer only. This is the true power of the network stack approach to things. As Vegeta would put it: "Tha network namespace's power is over 9000!". **TODO**: Insert Meme here.
 
-Although they all share process namepace, IPCs namespace, the same file system...
+<!-- ![example](https://i.imgur.com/4ihZdsP.png) -->
 
-![example](https://i.imgur.com/4ihZdsP.png)
+<p align="center">
+    <img src="https://i.imgur.com/4ihZdsP.png">
+</p>
 
+In the above image we can see how we created a process in the host machine with the `sleep` command whose **PID** is `20483`. If the network elements were really isolated we wouldn't be able to see this process from other machines but the reality is different with mininet as we discussed.
 
-For example, I put in the host machine I create a process with PID **20483**, with the command **sleep**. If the network elements were isolated, they would not be able to see the processes on the host machine, however the reality with Mininet is different. 
+This is something to assume when working with Mininet's low-cost emulation :sweat_smile:. This approach would be lacking in other scenarios but it is more than enough to emulate a network. This fact casts some doubts on how to integrate our data collection system with **telegraf** in the different network elements without any incompatibilities...
 
-This is something to assume when working with Mininet, low-cost emulation :sweat_smile: . Although I repeat, to emulate a network is more than enough. What we should see is how to integrate our data collection system (telegraph) in the different elements of the network without incompatibilities. 
-
-That's why it was decided to take the controller out of this machine where Mininet was going to run, to avoid problems with by-passes by IPCs from telegraph to the InfluxDB database. So it would only remain to see how to install telegraf and configure it correctly so that it works as agreed.
-
-
+That's why we decided to take the controller "out of" the machine where Mininet was going to run so as to avoid problems with by-passes by IPCs from telegraf to the InfluxDB database. The only thing left for us to do is to figure out how to correctly install and configure telegraf so that everything works as intended.
 
 ---
 ## Troubleshooting
 
-* If we use a terminal, without **X server** for example, to reroute the graphical stdout of the virtual machine out, the Miniedit tool will not run. It uses tkinter, it needs the environment variable `$DISPLAY` properly configured. 
+<!-- * If we use a terminal, without **X server** for example, to reroute the graphical stdout of the virtual machine out, the Miniedit tool will not run. It uses tkinter, it needs the environment variable `$DISPLAY` properly configured. -->
+
+* If we are to use a terminal emulator without an **X server** installed or properly configured the **miniedit** tool will not run. This tool presents us with a GUI we can use to define our network and then it'll generate a script that brings it up for us. If we are to reroute the **stdout** of a VM we will need to set the `$DISPLAY` variable accordingly as **miniedit** used **tkinter** and it needs it to run correctly.
 
 
-* If there are problems when launching the scenario try to clean the previous environment. Normally if we go out with the mininet CLI quit command it should be deleted correctly, otherwise we can always clean it up ourselves:
-```
+* If there are problems when launching the scenario try to clean up the previous environment. If we exit the mininet CLI by issuing the `quit` everything should be deleted correctly, otherwise we can always clean it up ourselves by running:
+```bash
 sudo mn -c
 ```
-![clean](https://i.imgur.com/zRrxiP5.png)
+<!-- ![clean](https://i.imgur.com/zRrxiP5.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/zRrxiP5.png">
+</p>
 
 ## Appendix <a name="appendix"></a>
+TODO: Talk about the Vagrantfile
+TODO: Talk about file descriptors (stdout)
 
 
 ### Authors ✒️
 
-* **David Carrascal** - [Link github](https://github.com/davidcawork)
-* **Adrián Guerrero** - [Link github](https://github.com/adrihamel)
-* **Pablo Collado** - [Link github](https://github.com/pcolladosoto)
-* **Artem Strilets** - [Link github](https://github.com/ArtemSSOO)
+* **David Carrascal** -> [Link github](https://github.com/davidcawork)
+* **Adrián Guerrero** -> [Link github](https://github.com/adrihamel)
+* **Pablo Collado** -> [Link github](https://github.com/pcolladosoto)
+* **Artem Strilets** -> [Link github](https://github.com/ArtemSSOO)
 
 
 ### Wiki 📖
