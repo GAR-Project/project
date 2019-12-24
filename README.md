@@ -18,7 +18,7 @@
         
  * See how we can import the output of the script that decides if a DDos is running into the Grafana dashboard, to reflect it generate alarms and so on.
  
-   **IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :thinking_face:
+   **IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :panda_face:
  
  * **[Optional]** Knowing if we're under attack, How we can mitigate it? We should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py)) and try to take action from there.
  
@@ -33,7 +33,7 @@ Throughout the document we will always be talking about 2 virtual machines (VMs)
 
 ---
 
-## Installation methods  🔧
+## Installation methods :wrench:
 
 We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. Working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing erros becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
 
@@ -320,7 +320,7 @@ TODO: Talk about the Vagrantfile
 TODO: Talk about file descriptors (stdout)
 
 
-### Authors ✒️
+### Authors :black_nib:
 
 * **David Carrascal** -> [Link github](https://github.com/davidcawork)
 * **Adrián Guerrero** -> [Link github](https://github.com/adrihamel)
@@ -328,6 +328,6 @@ TODO: Talk about file descriptors (stdout)
 * **Artem Strilets** -> [Link github](https://github.com/ArtemSSOO)
 
 
-### Wiki 📖
+### Wiki :book:
 
 *Fuentes del proyecto*
