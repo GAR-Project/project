@@ -1,0 +1,15 @@
+---
+- name: Get Telegraf's installer
+  get_url:
+    url: https://dl.influxdata.com/telegraf/releases/telegraf_1.13.0-1_amd64.deb
+    dest: /home/{{ username }}/Telegraf.deb
+    checksum: sha256:53d9e2168126c56e1dccc0c625b54c14124e36f46c3aad8ba6d4ec4927ef4f2b
+
+- name: Install the .deb file
+  apt:
+    deb: /home/{{ username }}/Telegraf.deb
+
+- name: Start the Telegraf service
+  service:
+    name: telegraf
+    state: started
