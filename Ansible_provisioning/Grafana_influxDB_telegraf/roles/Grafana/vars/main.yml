@@ -1,5 +1,0 @@
----
-username: vagrant
-grafana_deps:
-  - adduser
-  - libfontconfig1
