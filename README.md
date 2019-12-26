@@ -25,8 +25,10 @@
  * ~~Choose an AI algorithmig for traffic classification~~ --> **SVM** (**S**upport **V**ector **M**achines) :heavy_check_mark:
  
  * **[Optional]** Knowing if we're under attack, How we can mitigate it? We should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py)) and try to take action from there.
-
  * Complete the appendix section
+ * Get all the documentation in LaTeX format
+ * Get the presentation ready
+
  
 <br>
 
