@@ -15,6 +15,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     test.vm.network :private_network,ip:"10.0.123.2"
     test.vm.provision "shell", :path => "./util/provisioning.sh"
     test.vm.provision "file", source: "./src/scenario_basic.py", destination: "/home/vagrant/scenario_basic.py"
+    test.vm.provision "file", source: "./src/ddos.py", destination: "/home/vagrant/ddos.py"
   end
   
   config.vm.define "controller" do |controller|
