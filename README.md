@@ -195,7 +195,187 @@ The main objective is being able to classify the traffic in the network as a nor
 
 #### Time to limit the links
 
+<div style="text-align: justify">
 
+We should no mention our scenario again. We had a **Ryu** controller, three **OVS** switches and several hosts "hanging" from these switches. The question is: **what's the capacity of the network links?**
+
+<!-- ![escenario](https://i.imgur.com/aeteCr9.png) -->
+
+According to Mininet's [wiki](https://github.com/mininet/mininet/wiki/Introduction-to-Mininet) that capacity is not limited in the sense that the network will be able to handle as much traffic as the hardware emulating it can. This implies that the more powerful the machine, the larger the link capacity will be. This poses a problem to our experiment as we want it to be reproducible in any host. That's why we have decided to limit each link's bandwidth during the network setup.
+
+This behaviour is a consequence of Mininet's implementation. We'll discuss it [here](#mininet_internals) later down the road but the key aspect is that we cannot neglect Mininet's implementation when making design choices!
+
+<br>
+
+</div>
+
+##### How to limit them
+
+<div style="text-align: center">
+
+<br>
+
+In order to limit the available **BW** (**B**and **W**idth) we'll use Mininet's API. This API is just a wrapper for a **TC** (**T**raffic **C**ontroller) who is in charge of modifying the kernel's **planner** (i.e *Network Scheduler*). The code where we leverage the above is:
+
+```python
+net = Mininet(topo = None,
+              build = False,
+              host = CPULimitedHost,
+              link = TCLink,
+              ipBase = '10.0.0.0/8')
+```
+
+Note how we need to limit each host's capacity by means of the CPU which is what we do through the `host` parameter in Mininet's contructor. We'll also need links with a `TCLink` type. We can achieve this thanks to the `link` parameter. This will let us impose the limits to the network capacity ourselves instead of depending on the host's machines capabilities.
+
+<br>
+
+After fiddling with the overall constructor we also need to take care when defining the network links. We can find the following lines over at **src/scenario_basic.py**:
+
+```python
+net.addLink(s1, h1, bw = 10)
+net.addLink(s1, h2, bw = 10)
+net.addLink(s1, s2, bw = 5, max_queue_size = 500)
+net.addLink(s3, s1, bw = 5, max_queue_size = 500)
+net.addLink(s2, h3, bw = 10)
+net.addLink(s2, h4, bw = 10)
+net.addLink(s3, h5, bw = 10)
+net.addLink(s3, h6, bw = 10)
+```
+
+We are fixing a **BW** for the links with the `bw` parameter. We have also chosen to assign a finite buffer size to the middle switches in an effor to get as close to reality as we possibly can. If the `max_queue_size` parameter hadn't been defined we would be working with "infinite" buffers at each switch's exit ports. Having these finite buffers will in fact introduce a damping effect in our tests as onece you fill them up you can't push any more data through: the output queues are absolutely full... In a real-life scenario we would suffer huge packet losses at the switches and that could be used as a symptom as well but we haven't taken it into accoun for the sake of simplicity.
+
+We fixed the queue lengths so that they were coherent with standard values. We decided to use a **500 packet** size because *Cisco*'s (:satisfied:) queue lengths range from 64 packets to about 1000 as found [here](https://www.cisco.com/c/en/us/support/docs/routers/7200-series-routers/110850-queue-limit-output-drops-ios.html). We felt like 500 was an appropriate value in the middle ground. With all these restrictions our scenario would look like this:
+
+<!-- ![limits](https://i.imgur.com/pzCf5GJ.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/pzCf5GJ.png">
+</p>
+
+By inspecting the network dimensions we can see how we have a clear bottleneck... This "flaw" has been introduced on purpose as we want to clearly differentiate regurlar traffic from the one we experience when under attack.
+
+</div>
+
+#### Getting used to hping3
+
+<div style="text-align: justify">
+
+This versatile tool can be configured so that it can explore a given network, perform traceroutes, send pings or carry out out flood attacks on different network layers. All in all, it lets us craft our own packets and send them to different destinations at some given rates. You can even forge the source **IP** address to go full stealth mode :ghost:. We'll just send regular pings: **ICMP --> Echo request (Type = 8, Code = 0)** whilst increasing the rate at which we send them. This will in turn make the network core collapse making our attack successful.
+
+Check out this [site](https://tools.kali.org/information-gathering/hping3) for more info on this awesome tool.
+
+</div>
+
+#### Installation... again! :weary:
+
+<div style="text-align: justify">
+
+The tool will be already present on the test machine as it was included in the **Vagrantfile** as part of the VM's provisioning script. In case you want to manually install it you can just run the command below as **hping3** is usually within the default software sources:
+
+```
+sudo apt install hping3
+```
+
+</div>
+
+#### Usage
+
+<div style="text-align: jsutify">
+
+As we have previously discussed this is quite a complete tool so we will only use one of the many functionalities to keep things simple. The command we'll be using is:
+
+```
+hping3 -V -1 -d 1400 --faster <Dest_IP>
+```
+
+We are going to break down each of the options:
+
+* `-V`: Show verbose output (i.e show more information)
+* `-1`: Generate ICMP packets. They'll be ping requests by default
+* `-d 1400`: Add a bogus payload. This is not strictly needed but it'll help us use up the link's BW faster. We have chosen a 1400 B payload so as not to suffer fragmentation at the network layer.
+* `--faster`:
+
+<br>
+
+We would like to point out that `hping3` could have been invoked with the `--flood` option instead of `--faster`. When using `--flood` the machine will generate as many packets as it possibly can. This would be great in a world of rainbows but... The virtual network was quickly overwhelmed by the ICMP messages and packets began to be discarded everywhere. Event though this is technically a **DoS** attack gone right too it obscures the phenomena we are fater so we decied to use `--faster` as the rate it provides suffices for our needs.
+
+</div>
+
+---
+
+#### Demo time! :tada:
+
+<div style="text-align: justify">
+
+The attack we are going to carry out comprises hosts **1**, **2** and **3**. We'll launch `hping3` from **Host1** targeting **Host4** and we'll try to ping **Host4** from **Host2**. We will in fact see how this "regular" ping doesn't get through as a consequence of a successful **DoS** attack. The image below depicts the situation:
+
+<!-- ![ataque](https://i.imgur.com/awt7e5v.png) -->
+
+<p align="center">
+    <img src="https://i.imgur.com/awt7e5v.png">
+</p>
+
+Let's begin by setting up the scenario like we usually do:
+
+```bash
+sudo python3 scenario_basic.py
+```
+
+Time to open terminals to both ICMP sources. We'll also fire up `Wireshark` on **Host4** to have a closer look at what's going on. Note the ampersand (`&`) at the end of the second command. It'll detach the `wireshark` process from the terminal so that we can continue running commands as we normally would. To do this we need to run:
+
+```bash
+mininet> xterm h1 h2
+mininet> h4 wireshark &
+```
+
+<br>
+
+Time to launch `hping3` from **Host1** with the parameters we discussed:
+
+<p align="center">
+    <img src="https://i.imgur.com/Uei0gb5.png">
+</p>
+
+<br>
+
+If we now try to ping **Host4** from **Host2** we'll fail horribly:
+
+<p align="cneter">
+    <img src="https://i.imgur.com/yjfSJoD.png">
+</p>
+
+<br>
+
+If we halt the **DoS** attack we will see the regular traffic resume its normal operation after a short period of time:
+
+<p align="center">
+    <img src="https://i.imgur.com/5fkmrEu.png">
+</p>
+
+<br>
+
+We then see how the **DoS** attack against **Host4** has been successful. In order to facilitate issuing the needed commands we have prepared a couple of `python` scripts containing all the needed information so that we only need to run them and be happy. You can find them at:
+
+* Attack: [`src/ddos.py`](https://github.com/GAR-Project/project/blob/master/src/ddos.py)
+* Regular traffic: [`src/normal.py`](https://github.com/GAR-Project/project/blob/master/src/normal.py)
+
+With all this ready to rock we now need to focus on detecting these attacks and seeing how to possibly mitigate them.
+
+</div>
+
+#### Wanted a video?
+
+<div style="text-align: justify">
+
+You can find a video showing the process we described step by step (click the image to follow the link :smirk_cat:). If you stumble upon any questions don't hesitate to contact us! :grin:
+
+<p align="center">
+    <a href="https://img.youtube.com/vi/ofZPmV6_y_M/0.jpg">
+        <img src="https://www.youtube.com/watch?v=ofZPmV6_y_M">
+    </a>
+</p>
+
+</div>
 
 ---
 
@@ -276,7 +456,7 @@ Someone once told me **manpages** were my friends. This doesn't apply here direc
 
 <br>
 
-## Mininet Internals
+## Mininet Internals <a name="mininet_internals"></a>
 
 We have been covering **Mininet** fow a while now but... What is exactly **Mininet**? It is a tool used for emulating **SDN** (**S**oftware **D**efined **N**etworks). We can write software programs describing the network topology we want and then run them to create a virtual network just like the one we described. Cool right?
 
