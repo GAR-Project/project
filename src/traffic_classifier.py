@@ -17,5 +17,5 @@ class gar_py:
 		return
 
 if __name__ == "__main__":
-	ai_bot = gar_py();
+	ai_bot = gar_py()
 	ai_bot.work_time()
