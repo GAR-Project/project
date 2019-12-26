@@ -22,7 +22,7 @@
  
    **IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :panda_face:
 
- * ~~Choose an AI algorithmig for traffic classification~~ --> **SVM** (**S**upport **V**ector **M**achines)
+ * ~~Choose an AI algorithmig for traffic classification~~ --> **SVM** (**S**upport **V**ector **M**achines) :heavy_check_mark:
  
  * **[Optional]** Knowing if we're under attack, How we can mitigate it? We should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py)) and try to take action from there.
 
