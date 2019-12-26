@@ -266,7 +266,7 @@ Check out this [site](https://tools.kali.org/information-gathering/hping3) for m
 
 </div>
 
-#### Installation... again! :weary:
+#### Installing things... again! :weary:
 
 <div style="text-align: justify">
 
@@ -340,7 +340,7 @@ Time to launch `hping3` from **Host1** with the parameters we discussed:
 
 If we now try to ping **Host4** from **Host2** we'll fail horribly:
 
-<p align="cneter">
+<p align="center">
     <img src="https://i.imgur.com/yjfSJoD.png">
 </p>
 
@@ -370,8 +370,8 @@ With all this ready to rock we now need to focus on detecting these attacks and 
 You can find a video showing the process we described step by step (click the image to follow the link :smirk_cat:). If you stumble upon any questions don't hesitate to contact us! :grin:
 
 <p align="center">
-    <a href="https://img.youtube.com/vi/ofZPmV6_y_M/0.jpg">
-        <img src="https://www.youtube.com/watch?v=ofZPmV6_y_M">
+    <a href="https://www.youtube.com/watch?v=ofZPmV6_y_M">
+        <img src="https://img.youtube.com/vi/ofZPmV6_y_M/0.jpg">
     </a>
 </p>
 
