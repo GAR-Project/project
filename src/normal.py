@@ -1,4 +1,4 @@
-import os, sys, time, datetime, signal
+import os, sys, time, datetime
 
 # Global parameters
 ERROR_BAD_ARGV_FROM_USER = '[pingGen] Error, incorrect arguments: '
