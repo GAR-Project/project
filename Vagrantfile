@@ -23,6 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     controller.vm.hostname = 'controller'  
     controller.vm.network :private_network,ip:"10.0.123.3"
     controller.vm.provision "shell", :path => "./util/ryu.sh"
+    controller.vm.provision "shell", :path => "./util/install_grafana_influxdb.sh"
   end
 	
 end
