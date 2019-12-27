@@ -94,10 +94,10 @@ cd project
 Manually launch the provisioning script in each machine:
 ```bash
 # To install Mininet and Mininet's dependencies. Run it on the "mininet" VM
-sudo ./util/provisioning.sh
+sudo ./util/install_mininet.sh
 
 # To install Ryu. Run it on the "controller" VM
-sudo ./util/ryu.sh
+sudo ./util/install_ryu.sh
 ```
 
 ---
