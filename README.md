@@ -91,13 +91,15 @@ git clone https://github.com/GAR-Project/project
 cd project
 ```
 
-Manually launch the provisioning script in each machine:
+Manually launch the provisioning scripts in each machine:
 ```bash
-# To install Mininet and Mininet's dependencies. Run it on the "mininet" VM
+# To install Mininet, Mininet's dependencies and telegraf. Run it on the "mininet" VM
 sudo ./util/install_mininet.sh
+sudo ./util/install_telegraf.sh
 
-# To install Ryu. Run it on the "controller" VM
+# To install Ryu and Monitoring system (Grafana + InfluxDB). Run it on the "controller" VM
 sudo ./util/install_ryu.sh
+sudo ./util/install_grafana_influxdb.sh
 ```
 
 ---
