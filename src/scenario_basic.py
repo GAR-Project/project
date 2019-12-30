@@ -48,7 +48,7 @@ def scenario_basic():
     net.addLink(s3, h5, bw = 10)
     net.addLink(s3, h6, bw = 10)
 
-    info('*** Build it ***\n')
+    info('\n*** Build it ***\n')
     net.build()
 
     info('*** Start the controller  ***\n')
@@ -63,8 +63,12 @@ def scenario_basic():
     net.get('s3').start([c0])
     net.get('s1').start([c0])
 
-    info('*** RUN Mininet\'s CLI ***\n')
+    info('\n*** Start Telegraf ***\n')
+    # Notice that s1, s2 and s3 are in the same Network Namespace.
+    net.get('s1').cmd('telegraf --config conf/telegraf.conf &')
 
+    info('*** RUN Mininet\'s CLI ***\n')
+    
     CLI(net)
     net.stop()
 
