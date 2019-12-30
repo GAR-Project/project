@@ -15,7 +15,7 @@
 
  * ~~Setting up a network scenario with Mininet.~~ :heavy_check_mark:
  * ~~Choice of tools to recreate the DDoS attack.~~ --> We've chosen **ping and hping3** :heavy_check_mark:
- * Run telegraf on the 'test' machine. Run InfluxDB and Grafana on the 'control' machine.
+ * ~~Run telegraf on the 'test' machine. Run InfluxDB and Grafana on the 'control' machine.~~ :heavy_check_mark:
  * Using InfluxDB's interface ([Python API](https://github.com/influxdata/influxdb-python)) create a script that implements an AI algorithm that deterrmines whether we are under a DDoS attack or in a normal traffic situation through classification.
         
  * See how we can import the output of the script that decides if a DDos is running into the Grafana dashboard, to reflect it generate alarms and so on.
