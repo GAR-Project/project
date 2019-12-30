@@ -1,5 +1,4 @@
-from influxdb import InfluxDBClient
-import datetime
+import influxdb, datetime
 
 class gar_py:
 	def __init__(self, host='localhost', port=8086):
@@ -10,7 +9,7 @@ class gar_py:
 		self.host = host
 		self.port = port
 		self.dbname = 'telegraf'
-		self.client = InfluxDBClient(host, port, 'root', 'root', self.dbname)
+		self.client = influxdb.InfluxDBClient(host, port, 'root', 'root', self.dbname)
 		
 		# Comillas triples ya que si o si tenemos que usar comillas simples para taggear la etiqueta. 
 		self.query = """select bytes_sent from net where interface = 's1-eth1';"""
@@ -57,6 +56,23 @@ if __name__ == "__main__":
 	# Unit test (Query intf)
 	print('Enviando esta query: ' + ai_bot.query)
 	print('Resultado: \n' + str( ai_bot.get_data(ai_bot.query) ))	
+	
+	# Muchos datos, como los podemos procesar?
+	data = ai_bot.get_data(ai_bot.query)
+	for measurement in data.get_points(measurement='net'):
+	
+		bytes_sent = measurement['bytes_sent']
+		print(str(bytes_sent))
+	
+	# tambien podemos filtrar por tag, en este caso solo estamos pidiendo de s1-eth1, pero podriamos hacer esto:
+	#
+	# get_points(tags={ 'interface': 's1-eth2'})
+	#
+	# O podemos hacer una mezcla:
+	#
+	# get_points(measurement='net',tags={ 'interface':'s2-eth1'})
+	#
+	#
 	
 	# Init
 	ai_bot.work_time()
