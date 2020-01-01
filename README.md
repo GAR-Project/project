@@ -137,6 +137,23 @@ Running the scenario requires having logged into both VMs manually or using vagr
 ryu-manager ryu.app.simple_switch_13
 ```
 
+You might prefer to run the controller in the background as it doesn't provide really meaningful information. In order to do so we'll run:
+
+```
+ryu-manager ryu.app.simple_switch_13 > /dev/null 2>&1 &
+```
+
+Let's break this big boy down:
+
+* `> /dev/null` redirects the `stdout` file descriptor to a file located in `/dev/null`. This is a "special" file in linux systems that behaves pretty much like a black hole. Anything you write to it just "disappears" :open_mouth:. This way we get rid of all the bloat caused by the network startup.
+
+* `2>&1` will make the `stderr` file descriptor point where the `stdout` file descriptor is currently pointing (`/dev/null`). Terminal emulators usually have both `stdout` and `stderr`"going into" the terminal itself so we need to redirect these two to be sure we won't see any output.
+
+* `&` makes the process run in the background so that you'll be given a new prompt as soon as you run the command.
+
+If you want to move the controller app back into the foreground so that you can kill it with `CTRL + C` you can run `fg` which will bring the last process sent to the background back to the foreground.
+
+
 <!-- ![ryu_up](https://i.imgur.com/EGyKHLT.png) -->
 
 <p align="center">

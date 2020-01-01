@@ -6,14 +6,21 @@ VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/xenial64"
+  # Added graphics forwarding thanks to the X11 server so that
+  # I could open a XTERM terminal in my system. This concerns
+  # native linux users mostly!
+  config.ssh.forward_agent = true
+  config.ssh.forward_x11 = true
   config.vm.provider "virtualbox" do |v|
   v.customize ["modifyvm", :id, "--memory", 1024]
   end
 
   config.vm.define "test" do |test|
-    test.vm.hostname = 'test'  
+    test.vm.hostname = 'test'
     test.vm.network :private_network,ip:"10.0.123.2"
     test.vm.provision "shell", :path => "./util/install_mininet.sh"
+    # My Vagrant version complains with the other file provisioning... I had to tweak it for my system
+    # test.vm.provision "file", source: "./conf/telegraf.conf", destination: "/home/vagrant/conf/telegraf.conf"
     test.vm.provision "file", source: "conf", destination: "/home/vagrant/conf"
     test.vm.provision "shell", :path => "./util/install_telegraf.sh"
     test.vm.provision "file", source: "./src/scenario_basic.py", destination: "/home/vagrant/scenario_basic.py"
@@ -22,7 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
   
   config.vm.define "controller" do |controller|
-    controller.vm.hostname = 'controller'  
+    controller.vm.hostname = 'controller'
     controller.vm.network :private_network,ip:"10.0.123.3"
     controller.vm.provision "shell", :path => "./util/install_ryu.sh"
     controller.vm.provision "shell", :path => "./util/install_grafana_influxdb.sh"

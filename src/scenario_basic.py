@@ -51,7 +51,7 @@ def scenario_basic():
     info('\n*** Build it ***\n')
     net.build()
 
-    info('*** Start the controller  ***\n')
+    info('*** Start the controller ***\n')
     for controller in net.controllers:
         controller.start()
 
