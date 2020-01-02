@@ -404,7 +404,7 @@ You can find a video showing the process we described step by step (click the im
 
 ---
 
-## Mininet CLI 
+## Mininet CLI (**C**ommand **L**ine **I**nterface)
 We've already set up our scenario and verified that it's working properly. We will now detail the most important commands we can issue from of **Mininet's CLI**.
 
 ### Command: EOF + quit + exit
@@ -521,6 +521,17 @@ In the above image we can see how we created a process in the host machine with 
 This is something to assume when working with Mininet's low-cost emulation :sweat_smile:. This approach would be lacking in other scenarios but it is more than enough to emulate a network. This fact casts some doubts on how to integrate our data collection system with **telegraf** in the different network elements without any incompatibilities...
 
 That's why we decided to take the controller "out of" the machine where Mininet was going to run so as to avoid problems with by-passes by IPCs from telegraf to the InfluxDB database. The only thing left for us to do is to figure out how to correctly install and configure telegraf so that everything works as intended.
+
+### Getting telegraf to work :dizzy_face:
+Have you ever felt like throwing yourself into `/dev/null` to never come back? That was pretty much our mood when trying to get a host within mininet's network to communicate with the outside world. In order to understand how we ended up "fixing" (it just works :grimacing:) everything we need to go back and take a look at our initial ideas and implementations.
+
+We should not forget that we are looking at `ICMP` traffic in order to make predictions about the state of the network. We first thought about running **telegraf** on a network switch that was directly connected to the controller where our **InfluxDB** instance is running. The good thing about this scheme is that the telegraf process within the switches can communicate with the DB running in the controller through `HTTP`. This is due to the fact that we are invoking the `start()` method of the switches during the network configuration so even though there's no "real" link between them (we didn't create it by calling `addLink()`) they can still communicate.
+
+The above sounds wonderfully well but... switches can only work with information up to the **link layer**, they know nothing about **IP** packets or **ICMP** messages. We should note that **ICMP** is a layer 3-ish (more like layer 3.5) protocol. As it relies on IP for the network services but doesn't have a port number we cannot assign a particular layer to it... All in all the switches knew nothing about ICMP messages crossing them so we find that we need to run telegraf on one of the hosts if we want to get our metrics. In a real case scenario we could devote a router (which can process ICMP data) instead of a switch for this purpose and reconfigure the network accordingly. Anyway we need to get the telegraf instance running in one of the mininet created hosts to communicate with the influx database found in the controller VM. Let's see how we can go about it...
+
+When discussing the internal mechanisms used by mininet we found out that it relies solely on network namespaces. This implied that the filesystem was shared across the network elements we create with mininet **AND** the host machine itself. This host machine has direct connectivity with the VM hosting the controller so we can take advantage of what others consider to be a flaw in mininet's architecture. We are going to run a telegraf instance on mininet's `Host 4` whose input plugin will gather ICMP data and whose output will be a file in the VM's home directory. We'll be running a second telegraf instance in the host VM whose input will be the file containing `Host 4`'s output and whose output will be the Influx DB hosted in the controller VM. This architecture leverages the shared filesystem and uses a second telegraf instance as a mere proxy between one of mininet's internal hosts and the controller VM, both living in entirely different networks.
+
+In order to implemnent this idea we have created all the necessary configuration files under `conf` and we copy them to the appropriate places during Vagrant's provisioning stage.
 
 ---
 ## Troubleshooting
