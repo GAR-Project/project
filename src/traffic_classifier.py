@@ -15,7 +15,8 @@ class gar_py:
 		self.svm_inst = svm.SVC(kernel = kern_type)
 		
 		# We need to use these triple quotes so that we can use a tag within the query! 
-		self.query = """select bytes_sent from net where interface = 's1-eth1' order by time desc limit 1;"""
+		# self.query = """select bytes_sent from net where interface = 's1-eth1' order by time desc limit 1;"""
+		self.query = """SELECT DERIVATIVE(icmp_inechos) AS d_ping FROM net WHERE interface = 'h4-eth0' ORDER BY time DESC LIMIT 1"""
 		
 		# Ejemplos de querys:
 		# select icmp_inmsgs, icmp_outmsgs from net
@@ -52,9 +53,9 @@ class gar_py:
 			if new_entry['time'] > self.get_datetime():
 				n_samples += 1
 				# Take a look at the documentation for this quantity!
-				delta_mean = (new_entry['icmp_inechos'] - mean) / (n_samples)
+				delta_mean = (new_entry['d_ping'] - mean) / (n_samples)
 				mean += delta_mean
-				if self.under_attack(new_entry['icmp_inechos'], mean):
+				if self.under_attack(new_entry['d_ping'], mean):
 					self.ring_the_alarm(True)
 			time.sleep(2)
 	
