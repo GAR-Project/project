@@ -71,8 +71,8 @@ def scenario_basic():
     net.get('h4').cmd('telegraf --config conf/telegraf_mn_host.conf &')
 
     info('*** RUN Mininet\'s CLI ***\n')
-    
     CLI(net)
+
     net.stop()
 
 if __name__ == '__main__':

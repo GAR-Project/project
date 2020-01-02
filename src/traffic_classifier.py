@@ -10,7 +10,7 @@ class gar_py:
 		self.n_samples, self.traffic_mean = 0, 0
 		self.host = host
 		self.port = port
-		self.dbname = 'telegraf'
+		self.dbname = 'h4_net_stats'
 		self.client = influxdb.InfluxDBClient(host, port, 'root', 'root', self.dbname)
 		self.svm_inst = svm.SVC(kernel = kern_type)
 		
