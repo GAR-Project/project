@@ -65,7 +65,10 @@ def scenario_basic():
 
     info('\n*** Start Telegraf ***\n')
     # Notice that s1, s2 and s3 are in the same Network Namespace.
-    net.get('s1').cmd('telegraf --config conf/telegraf.conf &')
+    # net.get('s1').cmd('telegraf --config conf/telegraf.conf &')
+    # We need to run telegraf in the hosts because the have ICMP visibility
+    # The switches can only see up to layer 2...
+    net.get('h4').cmd('telegraf --config conf/telegraf.conf &')
 
     info('*** RUN Mininet\'s CLI ***\n')
     

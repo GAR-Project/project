@@ -59,7 +59,7 @@ class gar_py:
 			time.sleep(2)
 	
 	def under_attack(self, ping_sample, current_mean):
-		if self.svm_inst.predict([[ping_sample, current_mean]]) == 1:
+		if self.svm_inst.predict([[ping_sample, current_mean]])[0] == 1:
 			return True
 		else:
 			return False
