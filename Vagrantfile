@@ -22,7 +22,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # My Vagrant version complains with the other file provisioning... I had to tweak it for my system
     # Uncomment the latter to use a more robust provisioning. As we only use one config file it's ok for us!
     test.vm.provision "file", source: "./conf/telegraf_mn_host.conf", destination: "/home/vagrant/conf/telegraf_mn_host.conf"
-    test.vm.provision "file", source: "./conf/telegraf_test_2_controller.conf", destination: "/etc/telegraf/telegraf.conf"
+    test.vm.provision "file", source: "./conf/telegraf_test_2_controller.conf", destination: "/home/vagrant/conf/telegraf.conf"
     # test.vm.provision "file", source: "conf", destination: "/home/vagrant/conf"
     test.vm.provision "shell", :path => "./util/install_telegraf.sh"
     test.vm.provision "file", source: "./src/scenario_basic.py", destination: "/home/vagrant/scenario_basic.py"
