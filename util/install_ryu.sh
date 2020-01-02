@@ -18,3 +18,5 @@ cd ryu
 sudo pip install -r tools/pip-requires -r tools/optional-requires
 sudo pip install .
 
+# Add traffic_classifier dependences
+sudo apt install -y python3-sklearn
