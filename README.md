@@ -14,21 +14,27 @@
 ## TODO
 
  * ~~Setting up a network scenario with Mininet.~~ :heavy_check_mark:
+
  * ~~Choice of tools to recreate the DDoS attack.~~ --> We've chosen **ping and hping3** :heavy_check_mark:
+
  * ~~Run telegraf on the 'test' machine. Run InfluxDB and Grafana on the 'control' machine.~~ :heavy_check_mark:
- * Using InfluxDB's interface ([Python API](https://github.com/influxdata/influxdb-python)) create a script that implements an AI algorithm that deterrmines whether we are under a DDoS attack or in a normal traffic situation through classification.
-        
+
+ * ~~Using InfluxDB's interface ([Python API](https://github.com/influxdata/influxdb-python)) create a script that implements an AI algorithm that deterrmines whether we are under a DDoS attack or in a normal traffic situation through classification.~~ :heavy_check_mark:
+
  * ~~See how we can import the output of the script that decides if a DDos is running into the Grafana dashboard, to reflect it generate alarms and so on.~~ :heavy_check_mark:
- 
-   ~~**IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :panda_face:~~ :heavy_check_mark:
- 
+
+ * ~~**IDEA**: Manually add a measurement in *telegraf* that tells us whether or not we are under attack in a binary fashion and monitor it from *Grafana* in the usual way. I gues we can easily insert data into *InfluxDB* from *Python* :panda_face:~~ :heavy_check_mark:
+
  * ~~See how we can export data from InfluxDB and how we can manipulate it.~~ :heavy_check_mark:
- 
+
  * ~~Choose an AI algorithmig for traffic classification~~ --> **SVM** (**S**upport **V**ector **M**achines) :heavy_check_mark:
- 
+
  * **[Optional]** Knowing if we're under attack, How we can mitigate it? We should get into the logic of the Ryu app ([`simple_switch_13.py`](https://github.com/osrg/ryu/blob/master/ryu/app/simple_switch_13.py)) and try to take action from there.
- * Complete the appendix section
+
+ * ~~Complete the appendix section.~~ :heavy_check_mark
+
  * Get all the documentation in LaTeX format
+
  * Get the presentation ready
 
  
@@ -37,7 +43,7 @@
 ---
 
 ## Notes
-Throughout the document we will always be talking about 2 virtual machines (VMs) on which we implement the scenario we are discussing. In order to keep it simple we hace called one VM **controller** and the other one **mininet**. Even though the names may seem kind of random at the moment we promise they're not. Just keep this in mind as you continue reading.
+Throughout the document we will always be talking about 2 virtual machines (VMs) on which we implement the scenario we are discussing. In order to keep it simple we hace called one VM **controller** and the other one **test**. Even though the names may seem kind of random at the moment we promise they're not. Just keep this in mind as you continue reading.
 
 <br>
 
@@ -45,7 +51,7 @@ Throughout the document we will always be talking about 2 virtual machines (VMs)
 
 ## Installation methods :wrench:
 
-We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. Working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing erros becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
+We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. By working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing erros becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
 
 ### Vagrant
 First of all, clone the repository from GitHub :octocat: and navigate into the new directory with:
@@ -64,7 +70,7 @@ vagrant ssh test
 vagrant ssh controller
 ```
 
-We should already have all the machines configured with all the necessary tools to bring our network up with Mininet on the **test** VM, and Ryu on the **controller** VM .
+We should already have all the machines configured with all the necessary tools to bring our network up with Mininet on the **test** VM, and Ryu on the **controller** VM. This includes every `python3` dependency as well as any needed packages.
 
 #### Troubleshooting problems regarding SSH
 If you have problems connecting via SSH to the machine, check that the keys in the path `.vagrant/machines/test/virtualbox/` are owned by the user, and have read-only permissions for the owner of the key. 
@@ -534,6 +540,7 @@ When discussing the internal mechanisms used by mininet we found out that it rel
 In order to implemnent this idea we have created all the necessary configuration files under `conf` and we copy them to the appropriate places during Vagrant's provisioning stage.
 
 ---
+
 ## Troubleshooting
 
 <!-- * If we use a terminal, without **X server** for example, to reroute the graphical stdout of the virtual machine out, the Miniedit tool will not run. It uses tkinter, it needs the environment variable `$DISPLAY` properly configured. -->
@@ -552,11 +559,46 @@ sudo mn -c
 </p>
 
 ## Appendix <a name="appendix"></a>
-* TODO: Talk about the Vagrantfile
-* TODO: Talk about file descriptors (stdout)
 
+We have decided to prepare an appendix so that we can shed some light on obscure topics not directly related to the project itself. We'll talk about tangential componentes of the project so that we can have a clearer idea of what's going on in the background and you can get a better grasp of the tools we have employed. It's a win win!
 
-### Authors :black_nib:
+### The Vagrantfile
+
+I bet you have heard about `Virtualbox` this wonderful program lets us virtualize an entire computer inside our own so that we can try new linux-based distros, use a Windows OS from Linux or just "create" a server farm for our own personal needs amongst many other use cases. These "virtual computers" are called **Virtual Machines** or **VM**s in `Virtualbox` lingo. The "bad" thing is that `Virtualbox` only offers a **GUI** (**G**raphical **U**ser **I**nterface) to manage new and existing VMs which makes the process extremely slow and changes it with each new update (the window titles vary, the menus are in different places...). This poses no problem at all to the average user but it becomes a nuisance in scenarios like ours.
+
+Another point of concern is the VM's provisioning: How can we get files from the host machine into the VM? We commonly used shared folders between the host machine and the VM but the set-up process can be a real pain. Is there any hope left in the galaxy? Yes: Help me `Vagrant`, you are my only hope!
+
+We can think of `Vagrant` as a wrapper for `Virtualbox` that let's us describe the VM's we want in a file called the `Vagrantfile`. We then run `Vagrant` with this file as an input and everything will be set up for us! By changing the `Vagrantfile` we can modify every VM in our topology. This includes provisioning new files, changing their memory, hostname, OS... This allows for a much more reproducible environment and hence a great portability.
+
+The `Vagrantfile` itself is written in `ruby`. It's contents are mostly in plain English and we have included comments for the tricky parts so as to make everything as clear as possible. You can even use this `Vagrantfile` as a template for your own projects!
+
+### File descriptors: `stdout` and friends
+
+What's a file descriptor? We can think of it as an information bundle describing a place we can write data to and read data from. We can employ these file descriptors to communicate our programs with the exterior world by menas of a file. In `C` we can open files through their file descriptors which we create thanks to the `fopen()` function. If you take a closer look at the documentation you will see the type returned by `fopen()` is in fact a pointer to a `FILE struct` (i.e a `FILE*`). This `FILE struct` contains info about the file itself: Have we reached the `End Of File` mark?, where are we going to read/write with our next instruction?, has there been any error when reading/writing data? This will let us handle our file in any way we want!
+
+If you think about it we are constantly writing to the terminal from our programs using functions like `printf()` in `C` and `print()` in `python3`. Do you remember opening a file descriptor to be able to write to the terminal? I bet not! This is because our running programs are given 3 default file descriptors: `stdout`, `stdin` and `stderr`. These are connected to the terminal running the program (usually), the keyboard and the terminal as well (usually) respectively. If you have used `C` you may go ahed and try to call `fprintf()` and pass `stdout` as the file descriptor (the first argument). You'll see that you'll be writing to the screen! We can then see how both `stdout` and `stderr` are output file descriptors but `stdin` is used for reading keyboard input. As we are mainly concermed with `stdout` we won't go into much detail here.
+
+Why do we have two file descriptors "attached" to the terminal you ask? This let's us separate a programs terminal output into 2 classes: normal output and error/debugging output. Even though both would appear in the terminal if we didn't take any further action we can redirect `stderr` to a file for later inspection which is a common practice. This redicrection is carried out when incoking the program from a terminal. The following command would redirect `My_prog.ex`'s `stderr` output to a file called `I_mesed_up.txt`:
+
+```bash
+./My_prog.ex 2>I_messed_up.txt
+```
+
+Please note that each file descriptors are associated to a given number:
+
+* `stdin`: `0`
+* `stdout`: `1`
+* `stderr`: `2`
+
+You can even redirect a file descriptor to the place where another is pointing. Take care with the order used to carry out these redirections! The following would redirect `stdout` to where `stderr` is pointing:
+
+```bash
+./My_prog.ex 2>I_messed_up.txt 1>&2
+```
+
+We hope to have shed some light on how file descriptors work, what they are and how to use them!
+
+## Authors :black_nib:
 
 * **David Carrascal** -> [Link github](https://github.com/davidcawork)
 * **Adrián Guerrero** -> [Link github](https://github.com/adrihamel)
@@ -564,6 +606,6 @@ sudo mn -c
 * **Artem Strilets** -> [Link github](https://github.com/ArtemSSOO)
 
 
-### Wiki :book:
+## Wiki :book:
 
 *Fuentes del proyecto*
