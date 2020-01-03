@@ -93,6 +93,6 @@ class gar_py:
 		return (datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%SZ')
  
 if __name__ == "__main__":
-	ai_bot = gar_py(db_host = '10.0.123.3')
+	ai_bot = gar_py(db_host = '172.0.123.3')
 	# Load up the AI and start rocking!
 	ai_bot.work_time()
