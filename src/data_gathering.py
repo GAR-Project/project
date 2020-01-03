@@ -6,7 +6,7 @@ n_samples, mean = 0, 0
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:
-        db = influxdb.InfluxDBClient('10.0.123.3', 8086, 'root', 'root', 'h4_net_stats')
+        db = influxdb.InfluxDBClient('172.0.123.3', 8086, 'root', 'root', 'h4_net_stats')
         measurement_class = sys.argv[1]
     elif len(sys.argv) == 3:
         db = influxdb.InfluxDBClient(sys.argv[1], 8086, 'root', 'root', 'h4_net_stats')

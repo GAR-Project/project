@@ -36,5 +36,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     controller.vm.provision "shell", :path => "./util/install_ryu.sh"
     controller.vm.provision "shell", :path => "./util/install_grafana_influxdb.sh"
     controller.vm.provision "file", source: "./src/traffic_classifier.py", destination: "/home/vagrant/traffic_clasifier.py"
+    controller.vm.provision "file", source: "./training_datasets/ICMP_data_class_0.txt", destination: "/home/vagrant/training_datasets/ICMP_data_class_0.txt"
+    controller.vm.provision "file", source: "./training_datasets/ICMP_data_class_1.txt", destination: "/home/vagrant/training_datasets/ICMP_data_class_1.txt"
   end
 end
