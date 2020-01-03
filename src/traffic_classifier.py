@@ -15,9 +15,9 @@ class gar_py:
 		self.client = influxdb.InfluxDBClient(self.host, self.port, 'root', 'root', self.dbname)
 		self.svm_inst = svm.SVC(kernel = kern_type)
 		if os.uname()[1] == "pop-os":
-			self.training_files = ["training_datasets/ICMP_data_class_0.txt", "training_datasets/ICMP_data_class_1.txt"]
+			self.training_files = ["training_datasets/ICMP_data_class_0.csv", "training_datasets/ICMP_data_class_1.csv"]
 		else:
-			self.training_files = ["/home/vagrant/training_datasets/ICMP_data_class_0.txt", "/home/vagrant/training_datasets/ICMP_data_class_1.txt"]
+			self.training_files = ["/home/vagrant/training_datasets/ICMP_data_class_0.csv", "/home/vagrant/training_datasets/ICMP_data_class_1.csv"]
 		
 		# We need to use these triple quotes so that we can use a tag within the query! 
 		# self.query = """select bytes_sent from net where interface = 's1-eth1' order by time desc limit 1;"""

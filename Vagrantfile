@@ -23,9 +23,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Uncomment the latter to use a more robust provisioning. As we only use one config file it's ok for us!
     test.vm.provision "file", source: "./conf/telegraf_mn_host.conf", destination: "/home/vagrant/conf/telegraf_mn_host.conf"
     test.vm.provision "file", source: "./conf/telegraf_test_2_controller.conf", destination: "/home/vagrant/conf/telegraf.conf"
-    test.vm.provision "file", source: "./training_datasets/ICMP_data_class_0.txt.conf", destination: "/home/vagrant/training_datasets/ICMP_data_class_0.txt.conf"
-    test.vm.provision "file", source: "./training_datasets/ICMP_data_class_1.txt.conf", destination: "/home/vagrant/training_datasets/ICMP_data_class_1.txt.conf"
-    # test.vm.provision "file", source: "conf", destination: "/home/vagrant/conf"
+    test.vm.provision "file", source: "./training_datasets/ICMP_data_class_0.csv", destination: "/home/vagrant/training_datasets/ICMP_data_class_0.csv"
+    test.vm.provision "file", source: "./training_datasets/ICMP_data_class_1.csv", destination: "/home/vagrant/training_datasets/ICMP_data_class_1.csv"
     test.vm.provision "shell", :path => "./util/install_telegraf.sh"
     test.vm.provision "file", source: "./src/scenario_basic.py", destination: "/home/vagrant/scenario_basic.py"
     test.vm.provision "file", source: "./src/ddos.py", destination: "/home/vagrant/ddos.py"
