@@ -601,8 +601,9 @@ Knowing the command to list Network Namespaces, and having previously set up the
 
 Oops :joy_cat:, it seems that there is no Network namespace created, maybe, **Mininet doesn't work as we said before?** First of all, let's calm down, we don't have to rewrite all the documentation.
 
-<img src="https://i.imgur.com/lBcFDBt.jpg" alt="calm" style="display: block;margin-left: auto; margin-right: auto; width: 50%;">
-
+<p align="center">
+<img src="https://i.imgur.com/lBcFDBt.jpg" alt="calm" style="display: block;margin-left: auto; margin-right: auto; width: 30%;">
+</p>
 </div>
 
 <br>
@@ -712,7 +713,7 @@ If we look at the command entered in each network namespace it is the same, `ip 
 
 
 
-Additionally we can corroborate our hypothesis by changing the "*verbability*" of our script, where we build the whole scenario topology, [`src/scenario_basic.py`](https://github.com/GAR-Project/project/blob/master/src/scenario_basic.py), we can change the level of `info` to `debug`, and launch the script again.
+Additionally we can corroborate our hypothesis by changing the "*verbosity*" of our script, where we build the whole scenario topology, [`src/scenario_basic.py`](https://github.com/GAR-Project/project/blob/master/src/scenario_basic.py), we can change the level of `info` to `debug`, and launch the script again.
 
 
 ```python
