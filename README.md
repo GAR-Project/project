@@ -436,7 +436,7 @@ In order to implemnent this idea we have created all the necessary configuration
 Once we implemented the solution above we were able to continue developing the **SVM** as we already had a way of retrieving data. That's why we decided to devote some time to looking for a more elegant solution. Just like we usually do in home LANs we decided to instantiate a NAT node to get interconnection to the network created for the VM's from within the emulated one.
 
 #### What data are we going to use?
-
+We are trying to overwhelm `Host 4` with a bunch (a **VERY BIG** bunch) of `ICMP Echo Requests` (that is fancy for `pings`). By reading through telegraf's input plugin list we came across the **net** plugin capable of providing `ICMP` data out of the box.
 
 ---
 
@@ -558,7 +558,7 @@ This is something to assume when working with Mininet's low-cost emulation :swea
 
 That's why we decided to take the controller "out of" the machine where Mininet was going to run so as to avoid problems with by-passes by IPCs from telegraf to the InfluxDB database. The only thing left for us to do is to figure out how to correctly install and configure telegraf so that everything works as intended.
 
-# Mininet Internals (II)
+## Mininet Internals (II)
 
 <div style="text-align: justify">
 
@@ -566,7 +566,7 @@ In this second part on the internal operation of Mininet, we will investigate th
 
 </div>
 
-## Is Mininet using Network Namespaces?
+### Is Mininet using Network Namespaces?
 
 <div style="text-align: justify">
 
@@ -608,7 +608,7 @@ Oops :joy_cat:, it seems that there is no Network namespace created, maybe, **Mi
 
 <br>
 
-### Not today :wink:
+#### Not today :wink:
 
 <div style="text-align: justify">
 
@@ -645,7 +645,7 @@ So we can say that the `ip netns list` command does work correctly. But then, wh
 
 </div>
 
-### Where are Mininet's Network Namespaces located? :kissing:
+#### Where are Mininet's Network Namespaces located? :kissing:
 
 <div style="text-align: justify">
 
@@ -666,7 +666,7 @@ Mininet, when is launched it creates an emulated network, when is closed it shou
 </div>
 
 
-#### Just a hypothesis?
+##### Just a hypothesis?
 
 <div style="text-align: justify">
 
@@ -731,7 +731,7 @@ As you can see in the execution, `veth` is created (**V**virtual **Eth**ernet de
 
 </div>
 
-### So, It's possible to use iproute2 with Mininet? :relaxed:
+#### So, It's possible to use iproute2 with Mininet? :relaxed:
 
 <div style="text-align: justify">
 
@@ -796,7 +796,7 @@ With all of the above, it is left up to the user to decide whether or not to use
 </div>
 
 
-## The Big Picture
+### The Big Picture
 
 
 <div style="text-align: justify">
@@ -813,7 +813,7 @@ As you can see, the switches are network elements that are supposed to be isolat
 
 <br>
 
-#### How would our Kernel-level scenario look then?
+##### How would our Kernel-level scenario look then?
 
 ![fin](https://i.imgur.com/Ex8P7zl.png)
 
