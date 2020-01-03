@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   config.vm.define "controller" do |controller|
     controller.vm.hostname = 'controller'
-    controller.vm.network :private_network,ip:"10.0.123.3"
+    controller.vm.network :private_network,ip:"172.0.123.3"
     controller.vm.provision "shell", :path => "./util/install_ryu.sh"
     controller.vm.provision "shell", :path => "./util/install_grafana_influxdb.sh"
     controller.vm.provision "file", source: "./src/traffic_classifier.py", destination: "/home/vagrant/traffic_clasifier.py"

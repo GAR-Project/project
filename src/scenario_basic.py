@@ -21,7 +21,7 @@ def scenario_basic():
     info('*** Add Controller (Ryu) ***\n')
     c0 = net.addController( name = 'c0',
                             controller = RemoteController,
-                            ip = '10.0.123.3',
+                            ip = '172.0.123.3',
                             protocol = 'tcp',
                             port = 6633)
 
@@ -69,6 +69,13 @@ def scenario_basic():
     # We need to run telegraf in the hosts because the have ICMP visibility
     # The switches can only see up to layer 2...
     net.get('h4').cmd('telegraf --config conf/telegraf_mn_host.conf &')
+    
+    info('\n*** Fixing full-connectivity ***\n')
+    net.addNAT().configDefault()
+    net.get('s1').cmd('iptables -t nat -A POSTROUTING -o enp0s8 -j MASQUERADE ')
+    net.get('s1').cmd('ovs-ofctl add-flow s1 in_port=1,dl_type=0x0800,nw_dst=172.0.123.3/32,actions=output:5')
+    net.get('s1').cmd('ovs-vsctl add-port s1 s1-eth5 -- set Interface s1-eth5 ofport_request=5')
+    net.get('s1').cmd('bash -c "echo 1 > /proc/sys/net/ipv4/ip_forward"')
 
     info('*** RUN Mininet\'s CLI ***\n')
     CLI(net)
