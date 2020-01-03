@@ -1,4 +1,4 @@
-import influxdb, datetime, time
+import influxdb, datetime, time, os
 # Install me with: pip3 install sklearn
 # We also need numpy: pip3 install numpy
 # It should have been installed as a dependency nonetheless! 
@@ -14,7 +14,10 @@ class gar_py:
 		self.dbname = db
 		self.client = influxdb.InfluxDBClient(self.host, self.port, 'root', 'root', self.dbname)
 		self.svm_inst = svm.SVC(kernel = kern_type)
-		self.training_files = ["training_datasets/ICMP_data_class_0.txt", "training_datasets/ICMP_data_class_1.txt"]
+		if os.uname()[1] == "pop-os":
+			self.training_files = ["training_datasets/ICMP_data_class_0.txt", "training_datasets/ICMP_data_class_1.txt"]
+		else:
+			self.training_files = ["/home/vagrant/training_datasets/ICMP_data_class_0.txt", "/home/vagrant/training_datasets/ICMP_data_class_1.txt"]
 		
 		# We need to use these triple quotes so that we can use a tag within the query! 
 		# self.query = """select bytes_sent from net where interface = 's1-eth1' order by time desc limit 1;"""
