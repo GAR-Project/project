@@ -744,9 +744,11 @@ First we must locate the PID of the bash that holds the Host1 Network Namespace.
 ```bash
 sudo ps aux | grep mininet | grep h1
 ```
-
+<p align="center">
+   
 ![pid_h1](https://i.imgur.com/o4U12CD.png)
 
+</p>
 
 Once we know the PID of the process that *holds* the Host1 Network Namespace, we will create the `/var/run/netns` directory in case it is not created:
 
@@ -760,12 +762,17 @@ We must make a softlink from the original Network Namespace file in the created 
 ```bash
 sudo ln -sfT /proc/<PID>/ns/net /var/run/netns/h1
 ```
-
+<p align="center">
+   
 ![ln](https://i.imgur.com/7n4eMLI.png)
+
+</p>
 
 Finally, we would only have to try again the command 'ip netns list' to see if it is able to list the Network namespace:
 
+<p align="center">
 <img src="https://i.imgur.com/9Sz3fjc.png" alt="funciona_n_n" style="display: block;margin-left: auto; margin-right: auto; width: 50%;">
+</p>
 
 <br>
 
@@ -776,9 +783,9 @@ Some will say it's dark magic.. But, it's just that, creating a softlink and kno
 
 As you can see, the command is fully functional. You can see how we are able to list all the interfaces of Host1's Network namespace. But as everything, it always has pros and cons, when we make the arrangement of creating a softlink and turning off the emulation with its corresponding system cleaning (we are mainly concerned with the elimination of the processes that supported the Network namespace), we are left with a broken softlink pointing to a site that no longer exists, or is no longer useful.
 
-
+<p align="center">
 <img src="https://i.imgur.com/sQoxBQn.png" style="display: block;margin-left: auto; margin-right: auto; width: 50%;">
-
+</p>
 
 <br>
 
