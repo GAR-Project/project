@@ -21,7 +21,7 @@ if __name__ == "__main__":
         print("Usage: python3 " + sys.argv[0] + " 0 | 1 [InfluxDB_IP] [InfluxDB_port] [DB_name]")
         exit(-1)
 
-    out_file = open("ICMP_data_class_{}.txt".format(measurement_class), "w+")
+    out_file = open("ICMP_data_class_{}.csv".format(measurement_class), "w+")
 
     for measurement in db.query(QUERY).get_points(measurement = 'net'):
         curr_derivative = measurement["d_ping"]
