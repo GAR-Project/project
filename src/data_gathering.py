@@ -31,5 +31,5 @@ if __name__ == "__main__":
         out_file.write("{}, {}, {}\n".format(curr_derivative, mean, measurement_class))
 
     out_file.close()
-    print("Finished!")
+    print("Finished generating a class {} training dataset!".format(measurement_class))
     exit(0)
