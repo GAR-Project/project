@@ -1,13 +1,13 @@
-import influxdb, datetime, time, os
+import influxdb, datetime, time, os, signal
 # Install me with: pip3 install sklearn
 # We also need numpy: pip3 install numpy
 # It should have been installed as a dependency nonetheless! 
 from sklearn import svm
 
 class gar_py:
-	def __init__(self, db_host = 'localhost', port = 8086, db = 'h4_net_stats', kern_type = 'linear'):
+	def __init__(self, db_host = 'localhost', port = 8086, db = 'h4_net_stats', kern_type = 'linear', dbg = False):
 		# Constructor n.n
-		self.debug = True
+		self.debug = dbg
 		self.n_samples, self.mean = 0, 0
 		self.host = db_host
 		self.port = port
@@ -94,8 +94,13 @@ class gar_py:
 	
 	def get_datetime(self):
 		return (datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%SZ')
+
+def ctrl_c_handler(s, f):
+	print("\b\bShutting down MR. SVM... Bye!")
+	exit(0)
  
 if __name__ == "__main__":
-	ai_bot = gar_py(db_host = '10.0.123.3')
+	signal.signal(signal.SIGINT, ctrl_c_handler)
+	ai_bot = gar_py(db_host = '10.0.123.3', dbg = True)
 	# Load up the AI and start rocking!
 	ai_bot.work_time()
