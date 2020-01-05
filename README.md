@@ -32,13 +32,13 @@
   * Third step: Putting it all together: `src/traffic_classifier.py`
 - [Mininet CLI (**C**ommand **L**ine **I**nterface)](#mininet-cli-command-line-interface)
 - [Mininet Internals](#mininet-internals-)
-  * Network Namespaces]
-- [Mininet Internals (II) <a name="mininet_internals_II"></a>](#mininet-internals--ii---a-name--mininet-internals-ii----a-)
+  * Network Namespaces
+- [Mininet Internals (II) <a name="mininet_internals_II"></a>](#mininet-internals-ii-)
   * Is Mininet using Network Namespaces?
   * The Big Picture
       - How would our Kernel-level scenario look then?
 - [Troubleshooting](#troubleshooting)
-- [Appendix <a name="appendix"></a>](#appendix--a-name--appendix----a-)
+- [Appendix <a name="appendix"></a>](#appendix-)
   * The Vagrantfile
   * File descriptors: `stdout` and friends
 
