@@ -1,13 +1,17 @@
 # GAR-Project 2019-2020
 
-   This workgroup is a project created by 4 students of the University of Alcalá for the subject of Network Management and Administration of the fourth year.
+   This workgroup is a project created by 4 students of the University of Alcalá for the subject of Network Management and Administration of the fourth year. 
 
-<br>
+## Abstract 
 
-## Guides (spanish):
+The purpose of this project is to develop an artificial intelligence to classify possible DDoS attacks in an SDN network. This will be done by using data collectors such as Telegraf, Mininet to emulate the SDN network, and InfluxDB and Grafana as a means to store data and visualize it respectively. For non-English speakers we leave part of the content of this guide written in Spanish:
+
 *  Network Scenario - Mininet Guide: [Link](https://hackmd.io/@davidcawork/r1fZC-nRS) 
 *  DDoS using hping3 tool Guide: [Link](https://hackmd.io/@davidcawork/HJ_D7jA0r)
 *  Mininet Internals (II) Guide: [Link](https://hackmd.io/@davidcawork/SyrwHoNJL)
+
+
+**Keywords**: [`DDoS attacks`](https://www.digitalattackmap.com/); [`SDN network`](https://www.opennetworking.org/sdn-definition/); [`Artificial Intelligence classification`](https://www.sciencedirect.com/science/article/abs/pii/016974399500050X); [`Mininet`](http://mininet.org/)
 
 <br>
 
@@ -496,7 +500,7 @@ Additionally we used matplotlib to draw the classification we were carrying out.
 
 We've also written a signal handler to allow for a graceful exit when pressing `CTRL + C`.
 
-And with that we are finished! :tada: We hope to have been clear enough but if you still have any questions don't hesitate to contact us. You can find our GitHub :octocat: profiles over [here](#contact).
+And with that we are finished! :tada: We hope to have been clear enough but if you still have any questions don't hesitate to contact us. You can find our GitHub :octocat: profiles over [here](#contact). 
 
 ---
 
@@ -952,23 +956,23 @@ We hope to have shed some light on how file descriptors work, what they are and 
 
 ## Wiki :book:
 
-* R. L. S. de Oliveira, C. M. Schweitzer, A. A. Shinoda and Ligia Rodrigues Prete, "Using Mininet for emulation and prototyping Software-Defined Networks," 2014 IEEE Colombian Conference on Communications and Computing (COLCOM), Bogota, 2014, pp. 1-6.
+1. R. L. S. de Oliveira, C. M. Schweitzer, A. A. Shinoda and Ligia Rodrigues Prete, "Using Mininet for emulation and prototyping Software-Defined Networks," 2014 IEEE Colombian Conference on Communications and Computing (COLCOM), Bogota, 2014, pp. 1-6.
 doi: 10.1109/ColComCon.2014.6860404 [Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6860404&isnumber=6860394)
 
-* Kokila RT, S. Thamarai Selvi and K. Govindarajan, "DDoS detection and analysis in SDN-based environment using support vector machine classifier," 2014 Sixth International Conference on Advanced Computing (ICoAC), Chennai, 2014, pp. 205-210. [Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7229711&isnumber=7229701)
+2. Kokila RT, S. Thamarai Selvi and K. Govindarajan, "DDoS detection and analysis in SDN-based environment using support vector machine classifier," 2014 Sixth International Conference on Advanced Computing (ICoAC), Chennai, 2014, pp. 205-210. [Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7229711&isnumber=7229701)
 
-* Manual [Network namespaces](http://man7.org/linux/man-pages/man7/network_namespaces.7.html)
+3. Manual [Network namespaces](http://man7.org/linux/man-pages/man7/network_namespaces.7.html)
 
-* Manual [Namespaces](http://man7.org/linux/man-pages/man7/namespaces.7.html)
+4. Manual [Namespaces](http://man7.org/linux/man-pages/man7/namespaces.7.html)
 
-* Manual [Telegraf](https://docs.influxdata.com/telegraf/v1.13/)
+5. Manual [Telegraf](https://docs.influxdata.com/telegraf/v1.13/)
 
-* Manual [InfluxDB](https://docs.influxdata.com/influxdb/v1.7/)
+6. Manual [InfluxDB](https://docs.influxdata.com/influxdb/v1.7/)
 
-* Manual [InfluxDB Python API](https://influxdb-python.readthedocs.io/en/latest/api-documentation.html)
+7. Manual [InfluxDB Python API](https://influxdb-python.readthedocs.io/en/latest/api-documentation.html)
 
-* Schematic diagrams made with [DrawIO](https://www.draw.io).
-*Fuentes del proyecto*
+8. Schematic diagrams made with [DrawIO](https://www.draw.io).
+
 
 
 
