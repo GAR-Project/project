@@ -952,3 +952,4 @@ We hope to have shed some light on how file descriptors work, what they are and 
 
 * Schematic diagrams made with [DrawIO](https://www.draw.io).
 *Fuentes del proyecto*
+* Kokila RT, S. Thamarai Selvi and K. Govindarajan, "DDoS detection and analysis in SDN-based environment using support vector machine classifier," 2014 Sixth International Conference on Advanced Computing (ICoAC), Chennai, 2014, pp. 205-210. ![Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7229711&isnumber=7229701)
