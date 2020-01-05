@@ -950,6 +950,23 @@ We hope to have shed some light on how file descriptors work, what they are and 
 
 ## Wiki :book:
 
+* R. L. S. de Oliveira, C. M. Schweitzer, A. A. Shinoda and Ligia Rodrigues Prete, "Using Mininet for emulation and prototyping Software-Defined Networks," 2014 IEEE Colombian Conference on Communications and Computing (COLCOM), Bogota, 2014, pp. 1-6.
+doi: 10.1109/ColComCon.2014.6860404 [Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=6860404&isnumber=6860394)
+
+* Kokila RT, S. Thamarai Selvi and K. Govindarajan, "DDoS detection and analysis in SDN-based environment using support vector machine classifier," 2014 Sixth International Conference on Advanced Computing (ICoAC), Chennai, 2014, pp. 205-210. [Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7229711&isnumber=7229701)
+
+* Manual [Network namespaces](http://man7.org/linux/man-pages/man7/network_namespaces.7.html)
+
+* Manual [Namespaces](http://man7.org/linux/man-pages/man7/namespaces.7.html)
+
+* Manual [Telegraf](https://docs.influxdata.com/telegraf/v1.13/)
+
+* Manual [InfluxDB](https://docs.influxdata.com/influxdb/v1.7/)
+
+* Manual [InfluxDB Python API](https://influxdb-python.readthedocs.io/en/latest/api-documentation.html)
+
 * Schematic diagrams made with [DrawIO](https://www.draw.io).
 *Fuentes del proyecto*
-* Kokila RT, S. Thamarai Selvi and K. Govindarajan, "DDoS detection and analysis in SDN-based environment using support vector machine classifier," 2014 Sixth International Conference on Advanced Computing (ICoAC), Chennai, 2014, pp. 205-210. ![Paper](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7229711&isnumber=7229701)
+
+
+
