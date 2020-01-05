@@ -433,7 +433,7 @@ When discussing the internal mechanisms used by mininet later on we'll find out 
 In order to implemnent this idea we have created all the necessary configuration files under `conf` to then copy them to the appropriate places during Vagrant's provisioning stage.
 
 #### Implementing a NAT (**N**etwork **A**ddress **T**ranslator) in Mininet for external communication
-Once we implemented the solution above we were able to continue developing the **SVM** as we already had a way of retrieving data. That's why we decided to devote some time to looking for a more elegant solution. Just like we usually do in home LANs we decided to instantiate a NAT node to get interconnection to the network created for the VM's from within the emulated one. You can take a closer look at this implementation [here](#mininet_internals_II).
+Once we implemented the solution above we were able to continue developing the **SVM** as we already had a way of retrieving data. That's why we decided to devote some time to looking for a more elegant solution. Just like we usually do in home LANs we decided to instantiate a NAT process to get interconnection to the network created for the VM's from within the emulated one. Due to problems with the internal functioning of this NAT process provided by Mininet, extra configuration had to be added to achieve the desired connectivity. To solve the problem a series of predefined rules (flows) were installed in each switch to "route" the traffic from our data collector to the NAT process and from there to the outside to InfluxDB.  This could be considered a "fix", but in fairness we are only using the logic of an SDN network to route our traffic in the desired way.  You can take a closer look at this implementation [in this branch](https://github.com/GAR-Project/project/tree/full-connectivity).
 
 #### What data are we going to use?
 We are trying to overwhelm `Host 4` with a bunch (a **VERY BIG** bunch) of `ICMP Echo Requests` (that is fancy for `pings`). By reading through telegraf's input plugin list we came across the **net** plugin capable of providing `ICMP` data out of the box.
@@ -485,6 +485,12 @@ Once it's trained we just need to call the class's `work_time()` method which wi
 4. Order the SVM to predict wheteher the new data represents an attack or not.
 5. Write an entry to the appropriate DB signaling whether or not we're under attack.
 6. Wait 5 seconds to read new data. New data is sent to the DB every 4 seconds so reading insaley fast is just throwing resources out the window.
+
+Additionally we used matplotlib to draw the classification we were carrying out. As you can see, the red dots are those data that have been classified as an anomalous traffic, DDoS traffic, and although it seems that there is only one blue dot belonging to "normal" traffic, it is not the case, there are several but their deviation between them is minimal :relaxed: .
+
+<p align="center">
+    <img src="https://i.imgur.com/8nfNKYn.png" width="50%">
+</p>
 
 We've also written a signal handler to allow for a graceful exit when pressing `CTRL + C`.
 
@@ -654,7 +660,7 @@ Knowing the command to list Network Namespaces, and having previously set up the
 Oops :joy_cat:, it seems that there is no Network namespace created, maybe, **Mininet doesn't work as we said before?** First of all, let's calm down, we don't have to rewrite all the documentation.
 
 <p align="center">
-<img src="https://i.imgur.com/lBcFDBt.jpg" alt="calm" style="display: block;margin-left: auto; margin-right: auto; width: 30%;">
+<img src="https://i.imgur.com/lBcFDBt.jpg" alt="calm" width="30%">
 </p>
 </div>
 
