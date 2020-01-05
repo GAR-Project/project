@@ -222,7 +222,7 @@ As you can see, the controller's **stdout** (please see the [appendix](#appendix
 
 ## Attack time! :boom:
 
-<div style="text-align: justify">
+
 
 We have already talked about how to set up our scenario but we haven't got into breaking things (i.e the fun stuff :smiling_imp:). Our goal is to simulate a **DoS** (**D**enial **o**f **Service**) attack. Note that we usually refer to this kind of threats as **DDoS** attacks where the first **D** stands for **D**istributed. This second "name" implies that we have multiple machines trying to flood our own. We are going to launch the needed amounts of traffic from a single host so we would be making a mistake if we were talking about a distributed attack. All in all this is just a minor nitpick, the concept behind both attacks is exactly the same.
 
@@ -230,11 +230,11 @@ We need to flood the network with traffic, great but... How should we do it? We 
 
 The main objective is being able to classify the traffic in the network as a normal or an abnormal situation with the help of AI algorithms. For these algorithms to be effective we need some training samples so that they can "learn" how to regard and classify said traffic. That's why we need a second tool capable of generating "normal" ICMP traffic so that we have something to compare against. Good ol' **ping** is our pal here.
 
-</div>
+
 
 #### Time to limit the links
 
-<div style="text-align: justify">
+
 
 We should no mention our scenario again. We had a **Ryu** controller, three **OVS** switches and several hosts "hanging" from these switches. The question is: **what's the capacity of the network links?**
 
@@ -246,11 +246,10 @@ This behaviour is a consequence of Mininet's implementation. We'll discuss it [h
 
 <br>
 
-</div>
+
 
 ##### How to limit them
 
-<div style="text-align: center">
 
 <br>
 
@@ -293,21 +292,21 @@ We fixed the queue lengths so that they were coherent with standard values. We d
 
 By inspecting the network dimensions we can see how we have a clear bottleneck... This "flaw" has been introduced on purpose as we want to clearly differentiate regurlar traffic from the one we experience when under attack.
 
-</div>
+
 
 #### Getting used to hping3
 
-<div style="text-align: justify">
+
 
 This versatile tool can be configured so that it can explore a given network, perform traceroutes, send pings or carry out out flood attacks on different network layers. All in all, it lets us craft our own packets and send them to different destinations at some given rates. You can even forge the source **IP** address to go full stealth mode :ghost:. We'll just send regular pings: **ICMP --> Echo request (Type = 8, Code = 0)** whilst increasing the rate at which we send them. This will in turn make the network core collapse making our attack successful.
 
 Check out this [site](https://tools.kali.org/information-gathering/hping3) for more info on this awesome tool.
 
-</div>
+
 
 #### Installing things... again! :weary:
 
-<div style="text-align: justify">
+
 
 The tool will be already present on the test machine as it was included in the **Vagrantfile** as part of the VM's provisioning script. In case you want to manually install it you can just run the command below as **hping3** is usually within the default software sources:
 
@@ -315,11 +314,11 @@ The tool will be already present on the test machine as it was included in the *
 sudo apt install hping3
 ```
 
-</div>
+
 
 #### Usage
 
-<div style="text-align: jsutify">
+
 
 As we have previously discussed this is quite a complete tool so we will only use one of the many functionalities to keep things simple. The command we'll be using is:
 
@@ -338,13 +337,13 @@ We are going to break down each of the options:
 
 We would like to point out that `hping3` could have been invoked with the `--flood` option instead of `--faster`. When using `--flood` the machine will generate as many packets as it possibly can. This would be great in a world of rainbows but... The virtual network was quickly overwhelmed by the ICMP messages and packets began to be discarded everywhere. Event though this is technically a **DoS** attack gone right too it obscures the phenomena we are faster so we decided to use `--faster` as the rate it provides suffices for our needs.
 
-</div>
+
 
 ---
 
 #### Demo time! :tada:
 
-<div style="text-align: justify">
+
 
 The attack we are going to carry out comprises hosts **1**, **2** and **4**. We'll launch `hping3` from **Host1** targeting **Host4** and we'll try to ping **Host4** from **Host2**. We will in fact see how this "regular" ping doesn't get through as a consequence of a successful **DoS** attack. The image below depicts the situation:
 
@@ -400,11 +399,11 @@ We then see how the **DoS** attack against **Host4** has been successful. In ord
 
 With all this ready to rock we now need to focus on detecting these attacks and seeing how to possibly mitigate them.
 
-</div>
+
 
 #### Wanted a video?
 
-<div style="text-align: justify">
+
 
 You can find a video showing the process we described step by step (click the image to follow the link :smirk_cat:). If you stumble upon any questions don't hesitate to contact us! :grin:
 
@@ -414,7 +413,6 @@ You can find a video showing the process we described step by step (click the im
     </a>
 </p>
 
-</div>
 
 ---
 
@@ -425,9 +423,11 @@ We have our scenario working properly and the attack is having the desired effec
 ### First step: Getting the data collection to work :dizzy_face:
 
 #### What tools are we going to use?
+
 For a previous project belonging to the same subject we were introduced to both **telegraf** and **influxdb**. The first one is a metrics agent in charge of collecting data about the host it's running on. It's entirely plugin driven so configuring it is quite a breeze! The latter is a **DBMS** (**D**ata**B**ase **M**anagement **S**ystem) whose architecture is specifically geared towards time series, just what we need! The interconnection between the two is straightforward as one of **telegraf**'s plugins provides native support for **influxdb**. We'll have to configure both appropriately and we'll see it wasn't as easy as we once thought due to mininet getting in the way. We have come up both with a "hacky" solution and an alternative any Telecommunications Engineer would be prod of. Just kidding, but it uses networking concepts and not workarounds though.
 
 #### Leveraging the Mininet's shared filesystem
+
 Have you ever felt like throwing yourself into `/dev/null` to never come back? That was pretty much our mood when trying to get a host within mininet's network to communicate with the outside world. In order to understand how we ended up "fixing" (it just works :grimacing:) everything we need to go back and take a look at our initial ideas and implementations.
 
 We should not forget that we are looking at `ICMP` traffic in order to make predictions about the state of the network. We first thought about running **telegraf** on a network switch that was directly connected to the controller where our **InfluxDB** instance is running. The good thing about this scheme is that the telegraf process within the switches can communicate with the DB running in the controller through `HTTP`. This is due to the fact that we are invoking the `start()` method of the switches during the network configuration so even though there's no "real" link between them (we didn't create it by calling `addLink()`) they can still communicate.
@@ -439,12 +439,15 @@ When discussing the internal mechanisms used by mininet later on we'll find out 
 In order to implemnent this idea we have created all the necessary configuration files under `conf` to then copy them to the appropriate places during Vagrant's provisioning stage.
 
 #### Implementing a NAT (**N**etwork **A**ddress **T**ranslator) in Mininet for external communication
+
 Once we implemented the solution above we were able to continue developing the **SVM** as we already had a way of retrieving data. That's why we decided to devote some time to looking for a more elegant solution. Just like we usually do in home LANs we decided to instantiate a NAT process to get interconnection to the network created for the VM's from within the emulated one. Due to problems with the internal functioning of this NAT process provided by Mininet, extra configuration had to be added to achieve the desired connectivity. To solve the problem a series of predefined rules (flows) were installed in each switch to "route" the traffic from our data collector to the NAT process and from there to the outside to InfluxDB.  This could be considered a "fix", but in fairness we are only using the logic of an SDN network to route our traffic in the desired way.  You can take a closer look at this implementation [in this branch](https://github.com/GAR-Project/project/tree/full-connectivity).
 
 #### What data are we going to use?
+
 We are trying to overwhelm `Host 4` with a bunch (a **VERY BIG** bunch) of `ICMP Echo Requests` (that is fancy for `pings`). By reading through telegraf's input plugin list we came across the **net** plugin capable of providing `ICMP` data out of the box.
 
 #### Getting the data to InfluxDB
+
 Instead of directly sending the output to an influxdb instance we are going to send it to a regular file thanks to the **file** output plugin. This leads us directly to the configuration of the second telegraf instance.
 
 In this second process we'll be using the **tail** input plugin. Just like Linux's `tail`, this command will continuously read a file so that it can use it as an input data stream. Instead of polling the file continuously we chose to instead notify telegraf to read it when changes took place. This leads to a more efficient use of system resources overall. The output plugin we'll be using is now good ol' **influxdb**. We'll point it to the influxdb instance running on the `controller` VM so that everything is correctly connected.
@@ -505,9 +508,11 @@ And with that we are finished! :tada: We hope to have been clear enough but if y
 ---
 
 ## Mininet CLI (**C**ommand **L**ine **I**nterface)
+
 We've already set up our scenario and verified that it's working properly. We will now detail the most important commands we can issue from of **Mininet's CLI**.
 
 ### Command: EOF + quit + exit
+
 These three commands are used for the same thing, to exit the **Mininet CLI** and finish the emulation. The source code of these three commands does not differ much, **EOF** and **quit** end up using the `do_exit` function at the end, so we could say that they are a bit repetitive. They offer several ways to kill the emulation so that people with different backgrounds feel "at `~`". The source code taking care of exiting is:
 
 ```python
@@ -527,6 +532,7 @@ def do_EOF( self, line ):
 ```
 
 ### Command: dpctl
+
 The **dpctl** command is a management utility that allows some control over the OpenFlow switch (ovs-ofctl on the OpenvSwitch). This tool lets us add flows to the flow table, check the features and status of the switches or clean the table among many other things. For example, recall how we previously made a ping between **h1** and **h3**. If we consult the flow tables we will be able to check how the rules for handling **ICMP** flows have been instantiated:
 
 <!-- ![dpctl](https://i.imgur.com/1N3yQm8.png) -->
@@ -540,6 +546,7 @@ Note how in the first and third switches we have 3 flow instead of the default o
 This command is quite complex and powerful, and it may not be completely necessary for what we are going to do in this practice. It is nevertheless undoubtedly one of the most important commands to understand the internal workings of **SDN** switches. For more information, we encourage you to take a look at the documentation over at [OpenvSwitch](http://www.openvswitch.org/support/dist-docs/ovs-ofctl.8.txt).
 
 ### Command: dump + net
+
 These commands will give us information about the emulated topology. The **net** command will indicate the names of the entities in the emulated topology as well as their interfaces. The **dump** command will also indicate the type of entity, its **IP** address, port when applicable, interface and the entitie's process identifier (**PID**).
 
 <!-- ![dump](https://i.imgur.com/ysCDTE5.png) -->
@@ -549,6 +556,7 @@ These commands will give us information about the emulated topology. The **net**
 </p>
 
 ### Command: xterm + gterm
+
 These two commands will allow us to open terminal emulators in the node identified by the accompanying argument. The command **xterm** will allow us to open a simple **XTERM** (the default terminal emulator for the **X** windows system) terminal emulator, and **gterm** launches a prettier but more resource hungry **Gnome terminal**. We can open several terminals at once by indicating all the nodes we want to open a terminal in. Later, when we discuss the inner workings of **Mininet**, we'll talk a bit more about where the **bash** process attached to the terminal emulator is running. You might think that this process is totally isolated from the machine on which you are running **Mininet**, but this is not entirely the case...
 
 ```bash
@@ -564,6 +572,7 @@ xterm h1 h6
 
 
 ### Command: nodes + ports + intfs
+
 These commands will list information related to the nodes in the topology. The **intfs** command will list all information related to the nodes' interfaces. The  **nodes** command will show every node in the topology. Finally, the **ports** command is used to list the ports and interfaces of the switches in the topology.
 
 <!-- ![intfs](https://i.imgur.com/9qNNYy1.png) -->
@@ -573,6 +582,7 @@ These commands will list information related to the nodes in the topology. The *
 </p>
 
 ### Command: The rest of the commands :smirk:
+
 Someone once told me **manpages** were my friends. This doesn't apply here directly but you get the idea. If you don't know what a command does try running it without arguments and you will be presented with a help section hopefully. If your machine blows up... It wasn't our fault! (It really should't though :ok_woman:). You can also issue `help <command_name>` from the **mininet CLI** to gather more intel. You can also contact us directly. We didn't want this section to grow too large and we believe the above commands are more than enough for our purposes.
 
 <br>
@@ -632,7 +642,6 @@ In this second part on the internal operation of Mininet, we will investigate th
 
 ### Is Mininet using Network Namespaces?
 
-<div style="text-align: justify">
 
 
 We have previously introduced that Mininet makes use of Network namespaces as a method to virtualize network stacks independent of each other, so that we can emulate networks at a minimum cost, but how can we be so sure that it really makes use of them? Here are the steps to verify whether or not Mininet is using Network namespaces.
@@ -668,13 +677,11 @@ Oops :joy_cat:, it seems that there is no Network namespace created, maybe, **Mi
 <p align="center">
 <img src="https://i.imgur.com/lBcFDBt.jpg" alt="calm" width="30%">
 </p>
-</div>
 
 <br>
 
 #### Not today :wink:
 
-<div style="text-align: justify">
 
 The problem that the command `ip netns list` **doesn't** give us information, is that mininet is not creating the required softlink for the tool to be able to list the network namespaces, if we read the [documentation](http://man7.org/linux/man-pages/man8/ip-netns.8.html) we can find out that `ip netns list` reads from the path `/var/run/netns/` where all the named network namespaces are placed. 
 
@@ -707,11 +714,10 @@ The first part of the trace is going to be omitted since the only thing it does 
 
 So we can say that the `ip netns list` command does work correctly. But then, where are the network namespaces used by Mininet?
 
-</div>
+
 
 #### Where are Mininet's Network Namespaces located? :kissing:
 
-<div style="text-align: justify">
 
 Well, to answer this question, we must first understand one thing. The `ip' tool with its **netns** module acts as a wrapper when we work with Network namespaces. Namespaces (there are several [types](http://man7.org/linux/man-pages/man7/network_namespaces.7.html)) have a finite life, that is, they live as long as they are **referenced**. A namespace can be referenced in **three** ways:
 
@@ -727,12 +733,10 @@ Mininet, when is launched it creates an emulated network, when is closed it shou
 
 
 
-</div>
-
 
 ##### Just a hypothesis?
 
-<div style="text-align: justify">
+
 
 
 Well, according to the above reasoning, we should see several processes that are created at the time of the build-up of our scenario in Mininet. These processes should each have a Network Namespace file, `/proc/{pid}/ns/net`, with a different **inode** for those processes running in different Network namespaces. Where do we start looking? 
@@ -793,11 +797,11 @@ As you can see in the execution, `veth` is created (**V**virtual **Eth**ernet de
 
 
 
-</div>
+
 
 #### So, It's possible to use iproute2 with Mininet? :relaxed:
 
-<div style="text-align: justify">
+
 
 The quick and easy answer in the current state would be that **no**. We can always make use of the Python API to run things inside a network element or if not, we can ultimately open the Mininet CLI, open an xterm and throw things by hand, or as we have done before make use of the `nsenter' tool. 
 
@@ -857,13 +861,11 @@ As you can see, the command is fully functional. You can see how we are able to 
 
 With all of the above, it is left up to the user to decide whether or not to use the iproute2 tool. If this is the case, it is recommended that an auxiliary cleaning script be developed to clean up those softlinks that are broken in the `/var/run/netns` directory when the emulation is finished.
 
-</div>
 
 
 ### The Big Picture
 
 
-<div style="text-align: justify">
 
 Once we have concluded that Mininet makes use of Network namespaces and we know how to demonstrate it, we will inspect each of the Network namespaces to draw a scheme of how our Kernel-level scenario is implemented. Let's remember how our scenario was:
 
@@ -883,7 +885,7 @@ As you can see, the switches are network elements that are supposed to be isolat
 
 
 So, to run 'telegraf' only on the switches we would just launch it on the default network namespace! This can be done with a single `telegraf` process since the useful interfaces are all in the same Network namespace :relaxed: .
-</div>
+
 
 
 ---
