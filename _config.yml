@@ -1,5 +1,6 @@
+---
 theme: jekyll-theme-cayman
-title: GAR-Project
+title: My custom title
 description: DDoS attacks detection by using SVM on SDN networks
 show_downloads: ["true"]
 plugins:
