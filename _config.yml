@@ -1,4 +1,4 @@
-theme: jekyll-theme-leap-day
+theme: jekyll-theme-cayman
 title: [GAR-Project]
 description: [DDoS attacks detection by using SVM on SDN networks]
 show_downloads: ["true"]
