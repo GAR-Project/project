@@ -814,7 +814,7 @@ sudo ps aux | grep mininet | grep h1
 ```
 <p align="center">
    
-![pid_h1](https://i.imgur.com/o4U12CD.png)
+<img src="https://i.imgur.com/o4U12CD.png">
 
 </p>
 
@@ -832,7 +832,7 @@ sudo ln -sfT /proc/<PID>/ns/net /var/run/netns/h1
 ```
 <p align="center">
    
-![ln](https://i.imgur.com/7n4eMLI.png)
+<img src="https://i.imgur.com/7n4eMLI.png">
 
 </p>
 
