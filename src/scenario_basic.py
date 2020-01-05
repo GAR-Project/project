@@ -42,7 +42,7 @@ def scenario_basic():
     net.addLink(s1, h1, bw = 10)
     net.addLink(s1, h2, bw = 10)
     net.addLink(s1, s2, bw = 5, max_queue_size = 500)
-    net.addLink(s3, s1, bw = 5, max_queue_size = 500)
+    net.addLink(s3, s2, bw = 5, max_queue_size = 500)
     net.addLink(s2, h3, bw = 10)
     net.addLink(s2, h4, bw = 10)
     net.addLink(s3, h5, bw = 10)
