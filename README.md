@@ -13,34 +13,34 @@
 
 ## Index
 
-- [Installation methods :wrench:](#installation-methods--wrench-)
-  * [Vagrant](#vagrant)
-  * [Native](#native)
+- [Installation methods :wrench:](#installation-methods-wrench)
+  * Vagrant
+  * Native
 - [Our scenario](#our-scenario)
-  * [Running the scenario](#running-the-scenario)
-  * [Is working properly?](#is-working-properly-)
-- [Attack time! :boom:](#attack-time---boom-)
-    + [Time to limit the links](#time-to-limit-the-links)
-    + [Getting used to hping3](#getting-used-to-hping3)
-    + [Installing things... again! :weary:](#installing-things-again---weary-)
-    + [Usage](#usage)
-    + [Demo time! :tada:](#demo-time---tada-)
-    + [Wanted a video?](#wanted-a-video-)
-- [Traffic classification with a SVM (**S**upport **V**ector **M**achine)](#traffic-classification-with-a-svm----s--upport---v--ector---m--achine-)
-  * [First step: Getting the data collection to work :dizzy_face:](#first-step--getting-the-data-collection-to-work--dizzy-face-)
-  * [Second step: Generating the training datasets](#second-step--generating-the-training-datasets)
-  * [Third step: Putting it all together: `src/traffic_classifier.py`](#third-step--putting-it-all-together---src-traffic-classifierpy-)
-- [Mininet CLI (**C**ommand **L**ine **I**nterface)](#mininet-cli----c--ommand---l--ine---i--nterface-)
-- [Mininet Internals <a name="mininet_internals"></a>](#mininet-internals--a-name--mininet-internals----a-)
-  * [Network Namespaces](#network-namespaces)
+  * Running the scenario
+  * Is working properly?
+- [Attack time! :boom:](#attack-time-boom)
+    + Time to limit the links
+    + Getting used to hping3
+    + Installing things... again! :weary:
+    + Usage
+    + Demo time! :tada:
+    + Wanted a video?
+- [Traffic classification with a SVM (**S**upport **V**ector **M**achine)](#traffic-classification-with-a-svm-support-vector-machine)
+  * First step: Getting the data collection to work :dizzy_face:
+  * Second step: Generating the training datasets
+  * Third step: Putting it all together: `src/traffic_classifier.py`
+- [Mininet CLI (**C**ommand **L**ine **I**nterface)](#mininet-cli-command-line-interface)
+- [Mininet Internals](#mininet-internals-)
+  * Network Namespaces]
 - [Mininet Internals (II) <a name="mininet_internals_II"></a>](#mininet-internals--ii---a-name--mininet-internals-ii----a-)
-  * [Is Mininet using Network Namespaces?](#is-mininet-using-network-namespaces-)
-  * [The Big Picture](#the-big-picture)
-      - [How would our Kernel-level scenario look then?](#how-would-our-kernel-level-scenario-look-then-)
+  * Is Mininet using Network Namespaces?
+  * The Big Picture
+      - How would our Kernel-level scenario look then?
 - [Troubleshooting](#troubleshooting)
 - [Appendix <a name="appendix"></a>](#appendix--a-name--appendix----a-)
-  * [The Vagrantfile](#the-vagrantfile)
-  * [File descriptors: `stdout` and friends](#file-descriptors---stdout--and-friends)
+  * The Vagrantfile
+  * File descriptors: `stdout` and friends
 
 ---
 
