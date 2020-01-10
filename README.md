@@ -611,7 +611,7 @@ Linux starts with a default **Network namespace** which is the one everyday user
 In this way, each network element has its own network namespace, i.e. each element has its own network stack and interfaces. So at the networking level, one could say, they are independent elements. The key is that every node shares the same process namespace, IPCs namespace, filesystem... We are virtualizing up to the network layer only. This is the true power of the network stack approach to things. As Vegeta would put it: "The network namespace's power is over 9000!".
 
 <p align="center">
-    <img src="https://i.imgur.com/C5X6bis.gif">
+    <img src="https://i.imgur.com/C5X6bis.gif" width="50%">
 </p>
 
 <!-- ![example](https://i.imgur.com/4ihZdsP.png) -->
