@@ -90,7 +90,7 @@ class gar_py:
 
 	# --- Aux Methods --- #	
 	def get_ddos_json_body(self, boolean):
-		return [{'measurement': 'ddos', 'fields': {'value': boolean}, 'tags': {'host': 'Ryu_Controller'}, 'time': self.get_datetime()}]
+		return [{'measurement': 'ddos', 'fields': {'attack_flag': int(boolean)}, 'tags': {'host': 'Ryu_Controller'}, 'time': self.get_datetime()}]
 	
 	def get_datetime(self):
 		return (datetime.datetime.now()).strftime('%Y-%m-%dT%H:%M:%SZ')
