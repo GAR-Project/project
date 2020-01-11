@@ -452,7 +452,7 @@ In this second process we'll be using the **tail** input plug-in. Just like Linu
 The structure of the system we are dealing with is then:
 
 <p align="center">
-    <img src="https://i.imgur.com/RO2w885.png">
+    <img src="https://github.com/GAR-Project/doc/blob/master/img/telegraf_connections.png">
 </p>
 
 We are now ready to start querying our database and begin working with the acquired information.
