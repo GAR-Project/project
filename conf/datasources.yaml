@@ -1,0 +1,17 @@
+apiVersion: 1
+
+
+deleteDatasources:
+- name: GAR Project
+  orgId: 1
+
+
+datasources:
+- name: GAR Project
+  type: influxdb
+  access: proxy
+  orgId: 1
+  url: http://10.0.123.3:8086
+  database: h4_net_stats
+  version: 1
+  editable: true
