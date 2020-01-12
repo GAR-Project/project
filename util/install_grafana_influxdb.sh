@@ -4,6 +4,7 @@
 sudo apt-get -fy install && apt-get install -y libfontconfig1
 wget https://dl.grafana.com/oss/release/grafana_6.5.2_amd64.deb
 sudo dpkg -i grafana_6.5.2_amd64.deb
+sudo systemctl start grafana-server
 rm grafana_6.5.2_amd64.deb
 
 #InfluxDB

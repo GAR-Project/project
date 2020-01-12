@@ -49,7 +49,7 @@ The purpose of this project is to develop an artificial intelligence to classify
 ---
 
 ## Notes
-Throughout the document we will always be talking about 2 virtual machines (VMs) on which we implement the scenario we are discussing. In order to keep it simple we have called one VM **controller** and the other one **test**. Even though the names may seem kind of random at the moment we promise they're not. Just keep this in mind as you continue reading.
+Throughout the document we will always be talking about 2 virtual machines (VMs) on which we implement the scenario we are discussing. In order to keep it simple we hace called one VM **controller** and the other one **test**. Even though the names may seem kind of random at the moment we promise they're not. Just keep this in mind as you continue reading.
 
 <br>
 
@@ -57,7 +57,7 @@ Throughout the document we will always be talking about 2 virtual machines (VMs)
 
 ## Installation methods :wrench:
 
-We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. By working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing errors becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
+We have created a **Vagrantfile** through which we provide each machine with the necessary scripts to install and configure the scenario. By working in a virtualized environment we make sure we all have the exact same configuration so that tracing and fixing erros becomes much easier. If you do not want to use Vagrant as a provider you can follow the native installation method we present below.
 
 ### Vagrant
 First of all, clone the repository from GitHub :octocat: and navigate into the new directory with:
@@ -125,18 +125,18 @@ Our network scenario is described in the following script: [`src/scenario_basic.
 
 
 <!--![Escenario](https://i.imgur.com/kH7kAqB.png)-->
-<!-- Using HTML let's us centre images! It's kind of dirty though... -->
+<!-- Using HTML let's us center images! It's kind of dirty though... -->
 <p align="center">
     <img src="https://i.imgur.com/kH7kAqB.png">
 </p>
 
 The image above presents us with the *logic* scenario we will be working with. As with many other areas in networking this logic picture doesn't correspond with the real implementation we are using. We have seen throughout the installation procedure how we are always talking about 2 VMs. If you read carefully you'll see that one VM's "names" are **controller** and **mininet**. So it should come as no surprise that the controller and the network itself are living in different machines!
 
-The first question that may arise is how on Earth can we logically join these 2 together. When working with virtualized environments we will generate a virtual LAN where each VM is able to communicate with one another. Once we stop thinking about programs and abstract the idea of "*process*" we find that we can easily identify the **controller** which is just a **ryu** app, which is nothing more than a **python3** app with the **controller**'s VM **IP** address and the port number where the **ryu** is listening. We shouldn't forget that **any** process running within **any** host in the entire **Internet** can be identified with the host's **IP** address and the processes **port** number. Isn't it amazing?
+The first question that may arise is how on Earth can we logically join these 2 together. When working with virtualized enviroments we will generate a virtual LAN where each VM is able to communicate with one another. Once we stop thinking about programs and abstract the idea of "*process*" we find that we can easily identify the **controller** which is just a **ryu** app, which is nothing more than a **python3** app with the **controller**'s VM **IP** address and the port number where the **ryu** is listening. We shouldn't forget that **any** process running within **any** host in the entire **Internet** can be identified with the host's **IP** address and the processes **port** number. Isn't it amazing?
 
-OK, the above sounds great but... Why should we let the controller live in a machine when we could have everything in a single machine and call it a day? We have our reasons:
+Ok, the above sounds great but... Why should we let the controller live in a machine when we could have everything in a single machine and call it a day? We have our reasons:
 
-* Facilitate teamwork, since the **AI's logic** will go directly into the controller's VM. This let's us increase both working group's independence. One may work on mininet's core and the data collection with **telegraf** whilst the other can look into the DDoS attack detection logic and visualization using **Grafana** and **InfluxDB**. 
+* Facilitate teamwork, since the **AI's logic** will go directly into the controller's VM. This let's us increase both working group's independence. One may work on the mininet core and the data collection with **telegraf** whilst the other can look into the DDoS attack detection logic and visualization using **Grafana** and **InfluxDB**. 
 
 * Facilitate the storage of data into **InfluxDB** from **telegraf**, as due to the internal workings of Mininet there may be conflicts in the communication of said data. Mininet's basic operation at a low level is be detailed below.
 
@@ -157,7 +157,7 @@ ryu-manager ryu.app.simple_switch_13 > /dev/null 2>&1 &
 
 Let's break this big boy down:
 
-* `> /dev/null` redirects the `stdout` file descriptor to a file located in `/dev/null`. This is a "special" file in Linux systems that behaves pretty much like a black hole. Anything you write to it just "disappears" :open_mouth:. This way we get rid of all the bloat caused by the network startup.
+* `> /dev/null` redirects the `stdout` file descriptor to a file located in `/dev/null`. This is a "special" file in linux systems that behaves pretty much like a black hole. Anything you write to it just "disappears" :open_mouth:. This way we get rid of all the bloat caused by the network startup.
 
 * `2>&1` will make the `stderr` file descriptor point where the `stdout` file descriptor is currently pointing (`/dev/null`). Terminal emulators usually have both `stdout` and `stderr`"going into" the terminal itself so we need to redirect these two to be sure we won't see any output.
 
@@ -226,7 +226,7 @@ As you can see, the controller's **stdout** (please see the [appendix](#appendix
 
 We have already talked about how to set up our scenario but we haven't got into breaking things (i.e the fun stuff :smiling_imp:). Our goal is to simulate a **DoS** (**D**enial **o**f **Service**) attack. Note that we usually refer to this kind of threats as **DDoS** attacks where the first **D** stands for **D**istributed. This second "name" implies that we have multiple machines trying to flood our own. We are going to launch the needed amounts of traffic from a single host so we would be making a mistake if we were talking about a distributed attack. All in all this is just a minor nitpick, the concept behind both attacks is exactly the same.
 
-We need to flood the network with traffic, great but... How should we do it? We already introduced the tool we are going to be using: **hping3**. This program was born as a TCP/IP packet assembler and analyser capable of generating ICMP traffic. Its biggest asset is being able to generate these ICMP messages as fast as the machine running it can: just what we need :japanese_goblin:.
+We need to flood the network with traffic, great but... How should we do it? We already introduced the tool we are going to be using: **hping3**. This program was born as a TCP/IP packet assembler and analyzer capable of generating ICMP traffic. Its biggest asset is being able to generate these ICMP messages as fast as the machine running it can: just what we need :japanese_goblin:.
 
 The main objective is being able to classify the traffic in the network as a normal or an abnormal situation with the help of AI algorithms. For these algorithms to be effective we need some training samples so that they can "learn" how to regard and classify said traffic. That's why we need a second tool capable of generating "normal" ICMP traffic so that we have something to compare against. Good ol' **ping** is our pal here.
 
@@ -264,7 +264,7 @@ net = Mininet(topo = None,
               ipBase = '10.0.0.0/8')
 ```
 
-Note how we need to limit each host's capacity by means of the CPU which is what we do through the `host` parameter in Mininet's constructor. We'll also need links with a `TCLink` type. We can achieve this thanks to the `link` parameter. This will let us impose the limits to the network capacity ourselves instead of depending on the host's machines capabilities.
+Note how we need to limit each host's capacity by means of the CPU which is what we do through the `host` parameter in Mininet's contructor. We'll also need links with a `TCLink` type. We can achieve this thanks to the `link` parameter. This will let us impose the limits to the network capacity ourselves instead of depending on the host's machines capabilities.
 
 <br>
 
@@ -281,7 +281,7 @@ net.addLink(s3, h5, bw = 10)
 net.addLink(s3, h6, bw = 10)
 ```
 
-We are fixing a **BW** for the links with the `bw` parameter. We have also chosen to assign a finite buffer size to the middle switches in an effort to get as close to reality as we possibly can. If the `max_queue_size` parameter hadn't been defined we would be working with "infinite" buffers at each switch's exit ports. Having these finite buffers will in fact introduce a damping effect in our tests as once you fill them up you can't push any more data through: the output queues are absolutely full... In a real-life scenario we would suffer huge packet losses at the switches and that could be used as a symptom as well but we haven't taken it into account for the sake of simplicity.
+We are fixing a **BW** for the links with the `bw` parameter. We have also chosen to assign a finite buffer size to the middle switches in an effor to get as close to reality as we possibly can. If the `max_queue_size` parameter hadn't been defined we would be working with "infinite" buffers at each switch's exit ports. Having these finite buffers will in fact introduce a damping effect in our tests as onece you fill them up you can't push any more data through: the output queues are absolutely full... In a real-life scenario we would suffer huge packet losses at the switches and that could be used as a symptom as well but we haven't taken it into accoun for the sake of simplicity.
 
 We fixed the queue lengths so that they were coherent with standard values. We decided to use a **500 packet** size because *Cisco*'s (:satisfied:) queue lengths range from 64 packets to about 1000 as found [here](https://www.cisco.com/c/en/us/support/docs/routers/7200-series-routers/110850-queue-limit-output-drops-ios.html). We felt like 500 was an appropriate value in the middle ground. With all these restrictions our scenario would look like this:
 
@@ -291,7 +291,7 @@ We fixed the queue lengths so that they were coherent with standard values. We d
     <img src="https://i.imgur.com/pzCf5GJ.png">
 </p>
 
-By inspecting the network dimensions we can see how we have a clear bottleneck... This "flaw" has been introduced on purpose as we want to clearly differentiate regular traffic from the one we experience when under attack.
+By inspecting the network dimensions we can see how we have a clear bottleneck... This "flaw" has been introduced on purpose as we want to clearly differentiate regurlar traffic from the one we experience when under attack.
 
 </div>
 
@@ -425,7 +425,7 @@ We have our scenario working properly and the attack is having the desired effec
 ### First step: Getting the data collection to work :dizzy_face:
 
 #### What tools are we going to use?
-For a previous project belonging to the same subject we were introduced to both **telegraf** and **influxdb**. The first one is a metrics agent in charge of collecting data about the host it's running on. It's entirely plug-in driven so configuring it is quite a breeze! The latter is a **DBMS** (**D**ata**B**ase **M**anagement **S**ystem) whose architecture is specifically geared towards time series, just what we need! The interconnection between the two is straightforward as one of **telegraf**'s plug-ins provides native support for **influxdb**. We'll have to configure both appropriately and we'll see it wasn't as easy as we once thought due to mininet getting in the way. We have come up both with a "hacky" solution and an alternative any Telecommunications Engineer would be prod of. Just kidding, but it uses networking concepts and not workarounds though.
+For a previous project belonging to the same subject we were introduced to both **telegraf** and **influxdb**. The first one is a metrics agent in charge of collecting data about the host it's running on. It's entirely plugin driven so configuring it is quite a breeze! The latter is a **DBMS** (**D**ata**B**ase **M**anagement **S**ystem) whose architecture is specifically geared towards time series, just what we need! The interconnection between the two is straightforward as one of **telegraf**'s plugins provides native support for **influxdb**. We'll have to configure both appropriately and we'll see it wasn't as easy as we once thought due to mininet getting in the way. We have come up both with a "hacky" solution and an alternative any Telecommunications Engineer would be prod of. Just kidding, but it uses networking concepts and not workarounds though.
 
 #### Leveraging the Mininet's shared filesystem
 Have you ever felt like throwing yourself into `/dev/null` to never come back? That was pretty much our mood when trying to get a host within mininet's network to communicate with the outside world. In order to understand how we ended up "fixing" (it just works :grimacing:) everything we need to go back and take a look at our initial ideas and implementations.
@@ -434,38 +434,38 @@ We should not forget that we are looking at `ICMP` traffic in order to make pred
 
 The above sounds wonderfully well but... switches can only work with information up to the **link layer**, they know nothing about **IP** packets or **ICMP** messages. We should note that **ICMP** is a layer 3-ish (more like layer 3.5) protocol. As it relies on IP for the network services but doesn't have a port number we cannot assign a particular layer to it... All in all the switches knew nothing about ICMP messages crossing them so we find that we need to run telegraf on one of the hosts if we want to get our metrics. In a real case scenario we could devote a router (which can process ICMP data) instead of a switch for this purpose and reconfigure the network accordingly. Anyway we need to get the telegraf instance running in one of the mininet created hosts to communicate with the influx database found in the controller VM. Let's see how we can go about it...
 
-When discussing the internal mechanisms used by mininet later on we'll find out that it relies solely on network namespaces. This implies that the filesystem is shared across the network elements we create with mininet **AND** the host machine itself. This host machine has direct connectivity with the VM hosting the controller so we can take advantage of what others consider to be a flaw in mininet's architecture. We are going to run a telegraf instance on mininet's `Host 4` whose input plug-in will gather ICMP data and whose output will be a file in the VM's home directory. We'll be running a second telegraf instance in the host VM whose input will be the file containing `Host 4`'s output and whose output will be the Influx DB hosted in the controller VM. This architecture leverages the shared filesystem and uses a second telegraf instance as a mere proxy between one of mininet's internal hosts and the controller VM, both living in entirely different networks.
+When discussing the internal mechanisms used by mininet later on we'll find out that it relies solely on network namespaces. This implies that the filesystem is shared across the network elements we create with mininet **AND** the host machine itself. This host machine has direct connectivity with the VM hosting the controller so we can take advantage of what others consider to be a flaw in mininet's architecture. We are going to run a telegraf instance on mininet's `Host 4` whose input plugin will gather ICMP data and whose output will be a file in the VM's home directory. We'll be running a second telegraf instance in the host VM whose input will be the file containing `Host 4`'s output and whose output will be the Influx DB hosted in the controller VM. This architecture leverages the shared filesystem and uses a second telegraf instance as a mere proxy between one of mininet's internal hosts and the controller VM, both living in entirely different networks.
 
-In order to implement this idea we have created all the necessary configuration files under `conf` to then copy them to the appropriate places during Vagrant's provisioning stage.
+In order to implemnent this idea we have created all the necessary configuration files under `conf` to then copy them to the appropriate places during Vagrant's provisioning stage.
 
 #### Implementing a NAT (**N**etwork **A**ddress **T**ranslator) in Mininet for external communication
 Once we implemented the solution above we were able to continue developing the **SVM** as we already had a way of retrieving data. That's why we decided to devote some time to looking for a more elegant solution. Just like we usually do in home LANs we decided to instantiate a NAT process to get interconnection to the network created for the VM's from within the emulated one. Due to problems with the internal functioning of this NAT process provided by Mininet, extra configuration had to be added to achieve the desired connectivity. To solve the problem a series of predefined rules (flows) were installed in each switch to "route" the traffic from our data collector to the NAT process and from there to the outside to InfluxDB.  This could be considered a "fix", but in fairness we are only using the logic of an SDN network to route our traffic in the desired way.  You can take a closer look at this implementation [in this branch](https://github.com/GAR-Project/project/tree/full-connectivity).
 
 #### What data are we going to use?
-We are trying to overwhelm `Host 4` with a bunch (a **VERY BIG** bunch) of `ICMP Echo Requests` (that is fancy for `pings`). By reading through telegraf's input plug-in list we came across the **net** plug-in capable of providing `ICMP` data out of the box.
+We are trying to overwhelm `Host 4` with a bunch (a **VERY BIG** bunch) of `ICMP Echo Requests` (that is fancy for `pings`). By reading through telegraf's input plugin list we came across the **net** plugin capable of providing `ICMP` data out of the box.
 
 #### Getting the data to InfluxDB
-Instead of directly sending the output to an influxdb instance we are going to send it to a regular file thanks to the **file** output plug-in. This leads us directly to the configuration of the second telegraf instance.
+Instead of directly sending the output to an influxdb instance we are going to send it to a regular file thanks to the **file** output plugin. This leads us directly to the configuration of the second telegraf instance.
 
-In this second process we'll be using the **tail** input plug-in. Just like Linux's `tail`, this command will continuously read a file so that it can use it as an input data stream. Instead of polling the file continuously we chose to instead notify telegraf to read it when changes took place. This leads to a more efficient use of system resources overall. The output plug-in we'll be using is now good ol' **influxdb**. We'll point it to the influxdb instance running on the `controller` VM so that everything is correctly connected.
+In this second process we'll be using the **tail** input plugin. Just like Linux's `tail`, this command will continuously read a file so that it can use it as an input data stream. Instead of polling the file continuously we chose to instead notify telegraf to read it when changes took place. This leads to a more efficient use of system resources overall. The output plugin we'll be using is now good ol' **influxdb**. We'll point it to the influxdb instance running on the `controller` VM so that everything is correctly connected.
 
 The structure of the system we are dealing with is then:
 
 <p align="center">
-    <img src="https://github.com/GAR-Project/doc/blob/master/img/telegraf_connections.png">
+    <img src="https://i.imgur.com/RO2w885.png">
 </p>
 
 We are now ready to start querying our database and begin working with the acquired information.
 
 #### A note on the sampling period
-When configuring the interconnection between both telegraf instances we initially left the default `10 s` refresh interval in both. When we read the data we were getting in the DB we noticed some "strange" results in between correct readings so we decided to fiddle with these sampling times in case they were interfering with each other. As we are communicating both processes by means of a file the timing for reading and writing can be critical... We fixed a `2 s` sampling interval in "mininet's" telegraf process and a `4 s` refresh rate in the VM's instance. This means that we are going to get 2 entries in the DB with each update!
+When configuring the interconnection between both telegraf instances we initially left the default `10 s` refresh interval in both. When we read the data we were getting in the DB we noticed some "satrange" results in between correct readings so we decided to fiddle with these sampling times in case they were interfering with each other. As we are communicating both processes by means of a file the timing for reading and writing can be critical... We fixed a `2 s` sampling interval in "mininet's" telegraf process and a `4 s` refresh rate in the VM's instance. This means that we are going to get 2 entries in the DB with each update!
 
 After running some tests we found everything was working flawlessly now :ok_woman: so we just left it as is.
 
 ### Second step: Generating the training datasets
 
 #### Weren't we using the received ICMP messages as the input?
-Well... yes and no. The cornerstone for the SVM's input is indeed the number of received ICMP messages **BUT** we decided to use the *derivative* of the incoming packets with respect to time instead of the absolute value. This approach will let the network admin apply the exact same SVM for attack detection even if the traffic increases due to a network enlargement. As we are looking for sudden changes in incoming messages rather than for large numbers this approach is more versatile.
+Well... yes and no. The cornerstone for the SVM's input is indeed the number of received ICMP messages **BUT** we decided to use the *derivative* of the incoming packets with respect to time instead of the absoulute value. This approach will let the network admin apply the exact same SVM for attack detection even if the traffic increases due to a network enlargement. As we are looking for sudden changes in incoming messages rather than for large numbers this approach is more versatile.
 
 After debating it for a while we settled on including the average of the derivative of the incoming packets as a parameter too. As the mean will vary slowly due to the disparity of the data generated by both situations we'll be more likely to consider the aftermath as an attack too. Even though we may not be subject to very high incoming packet variations any more we'll take a while to resume a normal operation and we decided to let this "recovery time" play a role in the SVM's prediction.
 
@@ -488,9 +488,9 @@ Once it's trained we just need to call the class's `work_time()` method which wi
 1. Read the last 3 entries in the DB.
 2. Verify these entries are indeed new.
 3. Update the parameters we're going to use for the prediction.
-4. Order the SVM to predict whether the new data represents an attack or not.
-5. Write an entry to the appropriate DB signalling whether or not we're under attack.
-6. Wait 5 seconds to read new data. New data is sent to the DB every 4 seconds so reading insanely fast is just throwing resources out the window.
+4. Order the SVM to predict wheteher the new data represents an attack or not.
+5. Write an entry to the appropriate DB signaling whether or not we're under attack.
+6. Wait 5 seconds to read new data. New data is sent to the DB every 4 seconds so reading insaley fast is just throwing resources out the window.
 
 Additionally we used matplotlib to draw the classification we were carrying out. As you can see, the red dots are those data that have been classified as an anomalous traffic, DDoS traffic, and although it seems that there is only one blue dot belonging to "normal" traffic, it is not the case, there are several but their deviation between them is minimal :relaxed: .
 
@@ -540,7 +540,7 @@ Note how in the first and third switches we have 3 flow instead of the default o
 This command is quite complex and powerful, and it may not be completely necessary for what we are going to do in this practice. It is nevertheless undoubtedly one of the most important commands to understand the internal workings of **SDN** switches. For more information, we encourage you to take a look at the documentation over at [OpenvSwitch](http://www.openvswitch.org/support/dist-docs/ovs-ofctl.8.txt).
 
 ### Command: dump + net
-These commands will give us information about the emulated topology. The **net** command will indicate the names of the entities in the emulated topology as well as their interfaces. The **dump** command will also indicate the type of entity, its **IP** address, port when applicable, interface and the entity's process identifier (**PID**).
+These commands will give us information about the emulated topology. The **net** command will indicate the names of the entities in the emulated topology as well as their interfaces. The **dump** command will also indicate the type of entity, its **IP** address, port when applicable, interface and the entitie's process identifier (**PID**).
 
 <!-- ![dump](https://i.imgur.com/ysCDTE5.png) -->
 
@@ -573,7 +573,7 @@ These commands will list information related to the nodes in the topology. The *
 </p>
 
 ### Command: The rest of the commands :smirk:
-Someone once told me **manpages** were my friends. This doesn't apply here directly but you get the idea. If you don't know what a command does try running it without arguments and you will be presented with a help section hopefully. If your machine blows up... It wasn't our fault! (It really shouldn't though :ok_woman:). You can also issue `help <command_name>` from the **mininet CLI** to gather more intel. You can also contact us directly. We didn't want this section to grow too large and we believe the above commands are more than enough for our purposes.
+Someone once told me **manpages** were my friends. This doesn't apply here directly but you get the idea. If you don't know what a command does try running it without arguments and you will be presented with a help section hopefully. If your machine blows up... It wasn't our fault! (It really should't though :ok_woman:). You can also issue `help <command_name>` from the **mininet CLI** to gather more intel. You can also contact us directly. We didn't want this section to grow too large and we believe the above commands are more than enough for our purposes.
 
 <br>
 
@@ -583,11 +583,11 @@ Someone once told me **manpages** were my friends. This doesn't apply here direc
 
 ## Mininet Internals <a name="mininet_internals"></a>
 
-We have been covering **Mininet** for a while now but... What is exactly **Mininet**? It is a tool used for emulating **SDN** (**S**oftware **D**efined **N**etworks). We can write software programs describing the network topology we want and then run them to create a virtual network just like the one we described. Cool right?
+We have been covering **Mininet** fow a while now but... What is exactly **Mininet**? It is a tool used for emulating **SDN** (**S**oftware **D**efined **N**etworks). We can write software programs describing the network topology we want and then run them to create a virtual network just like the one we described. Cool right?
 
 Now, notice how we used the term **emulation** instead of **simulation**. Even though many people regard these terms as equivalent they are **NOT** the same. When we talk about **simulation** we are referring to software that computes the outcome of an event given an expected behaviour. On the other hand, **emulation** recreates the scenario under study in its entirety on specific hardware to then study its behaviour.
 
-An example to differentiate the two could be to think about a plane cockpit. If we were to play a video-game like **Flight Simulator** we would be simulating (no surprise) the flight but if we were to practice using a 1:1 scale with real controls we would then be talking about emulation.
+An example to differentiate the two could be to think about a plane cockpit. If we were to play a videogame like **Flight Simulator** we would be simulating (no surprise) the flight but if we were to practice using a 1:1 scale with real controls we would then be talking about emulation.
 
 <!-- ![emulación](https://i.imgur.com/Pwr6MHb.jpg) -->
 
@@ -596,7 +596,7 @@ An example to differentiate the two could be to think about a plane cockpit. If 
 </p>
 
 
-With this little detail out of the way we could ask ourselves. Does **mininet** emulate or simulate a network?. It is a network **emulator**, here's why. Mininet reserves system resources for each node in the **emulated** network. You might think these nodes are "just" VMs or virtualized containers but... they're not. That solution would have many advantages but it wouldn't scale to be able to **emulate** large networks or huge amounts of traffic as it would exhaust the host system's resources... The Mininet developers then chose to **exclusively virtualize** what was necessary to carry out the desired **network emulation**.
+With this little detail out of the way we could ask ourselves. Does **mininet** emulate or simulate a network?. It is a network **emulator**, here's why. Mininet resrves system resources for each node in the **emulated** network. You might think these nodes are "just" VMs or virtualized containers but... they're not. That solution would have many advantages but it wouldn't scale to be able to **emulate** large networks or huge ammounts of traffic as it would exhaust the host system's resources... The Mininet developers then chose to **exclusively virtualize** what was necessary to carry out the desired **network emulation**.
 
 How did they do it? By using the **Network Namespaces**.
 
@@ -606,26 +606,21 @@ How did they do it? By using the **Network Namespaces**.
 
 A **network namespace** consists of a logical network stack replica that by default is composed of the **Linux kernel**, paths, **ARP** tables, **Iptables** and network interfaces.
 
-Linux starts with a default **Network namespace** which is the one everyday users need for example. This namespace includes a routing table, an ARP table, the iptables and any network interfaces it might need. The key here is that it is also possible to create more non-default network namespaces. We can then create new devices in those namespaces, or move an existing devices from one namespace to another. This is a rather complex virtualization concept provided by the Linux kernel and we will not delve any further. It is quite interesting if you ask us though... :fearful:
+Linux starts with a default **Network namespace** which is the one everyday users need for example. This namespace includes a routing table, an ARP table, the Iptables and any network interfaces it might need. The key here is that it is also possible to create more non-default network namespaces. We can then create new devices in those namespaces, or move an existing devices from one namespace to another. This is a rather complex virtualization concept provided by the Linux kernel and we will not delve any further. It is quite interesting if you ask us though... :fearful:
 
-In this way, each network element has its own network namespace, i.e. each element has its own network stack and interfaces. So at the networking level, one could say, they are independent elements. The key is that every node shares the same process namespace, IPCs namespace, filesystem... We are virtualizing up to the network layer only. This is the true power of the network stack approach to things. As Vegeta would put it: "The network namespace's power is over 9000!".
-
-<p align="center">
-    <img src="https://i.imgur.com/C5X6bis.gif" width="50%">
-</p>
-
-
-In the next image we can see how we created a process in the host machine with the `sleep` command whose **PID** is `20483`. If the network elements were really isolated we wouldn't be able to see this process from other machines but the reality is different with mininet as we discussed.
-
-This is something to assume when working with Mininet's low-cost emulation :sweat_smile:. This approach would be lacking in other scenarios but it is more than enough to emulate a network. This fact casts some doubts on how to integrate our data collection system with **telegraf** in the different network elements without any incompatibilities...
-
-That's why we decided to take the controller "out of" the machine where Mininet was going to run so as to avoid problems with by-passes by IPCs from telegraf to the InfluxDB database. The only thing left for us to do is to figure out how to correctly install and configure telegraf so that everything works as intended.
+In this way, each network element has its own network namespace, i.e. each element has its own network stack and interfaces. So at the networking level, one could say, they are independent elements. The key is that every node shares the same process namespace, IPCs namespace, filesystem... We are virtualizing up to the network layer only. This is the true power of the network stack approach to things. As Vegeta would put it: "Tha network namespace's power is over 9000!". **TODO**: Insert Meme here.
 
 <!-- ![example](https://i.imgur.com/4ihZdsP.png) -->
 
 <p align="center">
     <img src="https://i.imgur.com/4ihZdsP.png">
 </p>
+
+In the above image we can see how we created a process in the host machine with the `sleep` command whose **PID** is `20483`. If the network elements were really isolated we wouldn't be able to see this process from other machines but the reality is different with mininet as we discussed.
+
+This is something to assume when working with Mininet's low-cost emulation :sweat_smile:. This approach would be lacking in other scenarios but it is more than enough to emulate a network. This fact casts some doubts on how to integrate our data collection system with **telegraf** in the different network elements without any incompatibilities...
+
+That's why we decided to take the controller "out of" the machine where Mininet was going to run so as to avoid problems with by-passes by IPCs from telegraf to the InfluxDB database. The only thing left for us to do is to figure out how to correctly install and configure telegraf so that everything works as intended.
 
 ## Mininet Internals (II) <a name="mininet_internals_II"></a>
 
@@ -653,7 +648,7 @@ ryu-manager ryu.app.simple_switch_13
 ```
 
 
-Now that we've set the scenario up we should be able to see if there are any Network namespaces on our machine, to do this we'll use the **iproute2** toolkit. Within this pack we will keep the most famous tool, `ip`. The `ip` tool is becoming established in the new Linux distributions as the de facto tool to work on everything related to Networking in a Linux environment. In the latest versions of Ubuntu for example, the `ifconfig` command is starting to be replaced by the iproute2 toolkit (a.k.a `ip`). This tool has many modules, for more information see its manual:
+Now that we've set the scenario up we should be able to see if there are any Network namespaces on our machine, to do this we'll use the **iproute2** toolkit. Within this pack we will keep the most famous tool, `ip`. The `ip` tool is becoming established in the new linux distributions as the de facto tool to work on everything related to Networking in a Linux environment. In the latest versions of Ubuntu for example, the `ifconfig` command is starting to be replaced by the iproute2 toolkit (a.k.a `ip`). This tool has many modules, for more information see its manual:
 
 *    Tool manual [`ip`](https://linux.die.net/man/8/ip)
 
@@ -708,7 +703,7 @@ exit_group(0)                           = ?
 +++ exited with 0 +++
 ```
 
-The first part of the trace is going to be omitted since the only thing it does is, parse the parameters introduced, load very basic dynamic library functions in Linux (`*.so` files, shared objects, for example, cache, libc among others). We will keep the last lines of the trace where you can see perfectly how it tries to make an `open`, in read mode of the directory, but this **does not exist**. 
+The first part of the trace is going to be omitted since the only thing it does is, parse the parameters introduced, load very basic dynamic library functions in Linux ( `*.so` files, shared objects, for example, cache, libc among others). We will keep the last lines of the trace where you can see perfectly how it tries to make an `open`, in read mode of the directory, but this **does not exist**. 
 
 So we can say that the `ip netns list` command does work correctly. But then, where are the network namespaces used by Mininet?
 
@@ -728,7 +723,7 @@ Well, to answer this question, we must first understand one thing. The `ip' tool
 If none of these conditions are met, the namespace in question is **deleted**. If it is a `net' type namespace (a.k.a Network Namespace) those interfaces that are in the disappearing namespace will return to the default namespace. Once we understand this concept, we must think about the nature of the Network namespaces that Mininet creates.
 
 
-Mininet, when is launched it creates an emulated network, when is closed it should disappear, this process should be as light and fast as possible to provide a better user experience. The nature of Mininet's needs leads us to believe that the creation and destruction of network namespaces is associated with the first condition of referencing a namespace. That is, there would be no point in making mounts or softlinks that will have to be removed later, as this would mean a significant workload for large network emulations and an increase in the time spent cleaning up the system once the emulation is complete. In addition, we must take into account that there is a third condition that is quite suitable with Mininet's needs, since only one process is needed running per Network namespace, and when cleaning we must only finish with the processes that *support* the Network namespaces.
+Mininet, when is launched it creates an emulated network, when is closed it should disappear, this process should be as light and fast as possible to provide a better user experience. The nature of Mininet's needs leads us to believe that the creation and destruction of network namespaces is associated with the first condition of referencing a namespace. That is, there would be no point in making mounts or softlinks that will have to be removed later, as this would mean a significant workload for large network emulations and an increase in the time spent cleaning up the system once the emulation is complete. In addition, we must take into account that there is a third condition that is quite suitable with Mininet's needs, since only one process is needed running per Network namespace, and when cleaning we must only finish with the processes that *support* the Network namesaces.
 
 
 
@@ -914,11 +909,11 @@ sudo mn -c
 
 ## Appendix <a name="appendix"></a>
 
-We have decided to prepare an appendix so that we can shed some light on obscure topics not directly related to the project itself. We'll talk about tangential components of the project so that we can have a clearer idea of what's going on in the background and you can get a better grasp of the tools we have employed. It's a win win!
+We have decided to prepare an appendix so that we can shed some light on obscure topics not directly related to the project itself. We'll talk about tangential componentes of the project so that we can have a clearer idea of what's going on in the background and you can get a better grasp of the tools we have employed. It's a win win!
 
 ### The Vagrantfile
 
-I bet you have heard about `Virtualbox` this wonderful program lets us virtualize an entire computer inside our own so that we can try new Linux-based distros, use a Windows OS from Linux or just "create" a server farm for our own personal needs amongst many other use cases. These "virtual computers" are called **Virtual Machines** or **VM**s in `Virtualbox` lingo. The "bad" thing is that `Virtualbox` only offers a **GUI** (**G**raphical **U**ser **I**nterface) to manage new and existing VMs which makes the process extremely slow and changes it with each new update (the window titles vary, the menus are in different places...). This poses no problem at all to the average user but it becomes a nuisance in scenarios like ours.
+I bet you have heard about `Virtualbox` this wonderful program lets us virtualize an entire computer inside our own so that we can try new linux-based distros, use a Windows OS from Linux or just "create" a server farm for our own personal needs amongst many other use cases. These "virtual computers" are called **Virtual Machines** or **VM**s in `Virtualbox` lingo. The "bad" thing is that `Virtualbox` only offers a **GUI** (**G**raphical **U**ser **I**nterface) to manage new and existing VMs which makes the process extremely slow and changes it with each new update (the window titles vary, the menus are in different places...). This poses no problem at all to the average user but it becomes a nuisance in scenarios like ours.
 
 Another point of concern is the VM's provisioning: How can we get files from the host machine into the VM? We commonly used shared folders between the host machine and the VM but the set-up process can be a real pain. Is there any hope left in the galaxy? Yes: Help me `Vagrant`, you are my only hope!
 
@@ -926,19 +921,19 @@ We can think of `Vagrant` as a wrapper for `Virtualbox` that let's us describe t
 
 The `Vagrantfile` itself is written in `ruby`. It's contents are mostly in plain English and we have included comments for the tricky parts so as to make everything as clear as possible. You can even use this `Vagrantfile` as a template for your own projects!
 
-### File struct: `stdout` and friends
+### File descriptors: `stdout` and friends
 
-What's a file struct? We can think of it as an information bundle describing a place we can write data to and read data from. We can employ these file descriptors to communicate our programs with the exterior world by means of a file. In `C` we can open files through their file descriptors which we create thanks to the `fopen()` function. If you take a closer look at the documentation you will see the type returned by `fopen()` is in fact a pointer to a `FILE struct` (i.e a `FILE*`). This `FILE struct` contains info about the file itself: Have we reached the `End Of File` mark?, where are we going to read/write with our next instruction?, has there been any error when reading/writing data? This will let us handle our file in any way we want!
+What's a file descriptor? We can think of it as an information bundle describing a place we can write data to and read data from. We can employ these file descriptors to communicate our programs with the exterior world by menas of a file. In `C` we can open files through their file descriptors which we create thanks to the `fopen()` function. If you take a closer look at the documentation you will see the type returned by `fopen()` is in fact a pointer to a `FILE struct` (i.e a `FILE*`). This `FILE struct` contains info about the file itself: Have we reached the `End Of File` mark?, where are we going to read/write with our next instruction?, has there been any error when reading/writing data? This will let us handle our file in any way we want!
 
-If you think about it we are constantly writing to the terminal from our programs using functions like `printf()` in `C` and `print()` in `python3`. Do you remember opening a file descriptor to be able to write to the terminal? I bet not! This is because our running programs are given 3 default file descriptors: `stdout`, `stdin` and `stderr`. These are connected to the terminal running the program (usually), the keyboard and the terminal as well (usually) respectively. If you have used `C` you may go ahead and try to call `fprintf()` and pass `stdout` as the file descriptor (the first argument). You'll see that you'll be writing to the screen! We can then see how both `stdout` and `stderr` are output file descriptors but `stdin` is used for reading keyboard input. As we are mainly concerned with `stdout` we won't go into much detail here.
+If you think about it we are constantly writing to the terminal from our programs using functions like `printf()` in `C` and `print()` in `python3`. Do you remember opening a file descriptor to be able to write to the terminal? I bet not! This is because our running programs are given 3 default file descriptors: `stdout`, `stdin` and `stderr`. These are connected to the terminal running the program (usually), the keyboard and the terminal as well (usually) respectively. If you have used `C` you may go ahed and try to call `fprintf()` and pass `stdout` as the file descriptor (the first argument). You'll see that you'll be writing to the screen! We can then see how both `stdout` and `stderr` are output file descriptors but `stdin` is used for reading keyboard input. As we are mainly concermed with `stdout` we won't go into much detail here.
 
-Why do we have two file descriptors "attached" to the terminal you ask? This let's us separate a programs terminal output into 2 classes: normal output and error/debugging output. Even though both would appear in the terminal if we didn't take any further action we can redirect `stderr` to a file for later inspection which is a common practice. This redirection is carried out when invoking the program from a terminal. The following command would redirect `My_prog.ex`'s `stderr` output to a file called `I_mesed_up.txt`:
+Why do we have two file descriptors "attached" to the terminal you ask? This let's us separate a programs terminal output into 2 classes: normal output and error/debugging output. Even though both would appear in the terminal if we didn't take any further action we can redirect `stderr` to a file for later inspection which is a common practice. This redicrection is carried out when incoking the program from a terminal. The following command would redirect `My_prog.ex`'s `stderr` output to a file called `I_mesed_up.txt`:
 
 ```bash
 ./My_prog.ex 2>I_messed_up.txt
 ```
 
-Now, a file struct is an abstraction used by **C**. We've previously said that `fopen()` returned a pointer, that is, a memory address. The things is that Linux itself knows nothing about a `FILE` struct, it only understands file descriptors which are a simple integer. Now the key aspect is to find out the relation between these `FILE` structs and the corresponding file descriptors. Even though we haven't dug any deeper we believe there must be some kind of "map" or "vector" somewhere that can be indexed with each file descriptor to get the address of each file struct. We may be outright wrong, but finding a `FILE**` somewhere whose indexes are file descriptors wouldn't be much of a surprise. Anyway, we have some predefined file descriptors we can use when invoking commands. These are:
+Please note that each file descriptors are associated to a given number:
 
 * `stdin`: `0`
 * `stdout`: `1`

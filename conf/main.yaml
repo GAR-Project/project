@@ -1,14 +1,10 @@
 apiVersion: 1
 
 providers:
-- name: 'Test'
+- name: 'default'
   orgId: 1
-  folder: 'general'
+  folder: ''
   folderUid: ''
   type: file
-  disableDeletion: false
-  editable: true
-  updateIntervalSeconds: 5
-  allowUiUpdates: true
   options:
     path: /var/lib/grafana/dashboards

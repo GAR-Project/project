@@ -9,7 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Added graphics forwarding thanks to the X11 server so that
   # I could open a XTERM terminal in my system. This concerns
   # native linux users mostly!
-  # config.ssh.forward_agent = true
+  config.ssh.forward_agent = true
   config.ssh.forward_x11 = true
   config.vm.provider "virtualbox" do |v|
   v.customize ["modifyvm", :id, "--memory", 1024]

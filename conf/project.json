@@ -15,11 +15,11 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
+  "id": 1,
   "links": [],
   "panels": [
     {
-      "datasource": "InfluxDB-2",
+      "datasource": "GAR Project",
       "gridPos": {
         "h": 5,
         "w": 11,
@@ -72,12 +72,9 @@
               "type": "fill"
             }
           ],
-          "hide": false,
           "measurement": "net",
           "orderByTime": "ASC",
           "policy": "default",
-          "query": "SELECT mean(\"tsmLevel1Compactions\") FROM \"tsm1_engine\" WHERE (\"retentionPolicy\" = 'monitor') AND $timeFilter GROUP BY time($__interval) fill(null)",
-          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -90,23 +87,17 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "derivative"
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "host",
-              "operator": "=",
-              "value": "test"
-            },
-            {
-              "condition": "AND",
-              "key": "interface",
-              "operator": "=",
-              "value": "h4-eth0"
-            }
-          ]
+          "tags": []
         }
       ],
       "timeFrom": null,
@@ -120,7 +111,7 @@
       "cacheTimeout": null,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB-2",
+      "datasource": "GAR Project",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -135,6 +126,7 @@
         "alignAsTable": true,
         "avg": true,
         "current": false,
+        "hideEmpty": false,
         "max": true,
         "min": true,
         "rightSide": true,
@@ -160,21 +152,21 @@
       "steppedLine": false,
       "targets": [
         {
+          "alias": "drop_in",
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "5m"
               ],
               "type": "time"
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
           ],
-          "hide": false,
           "measurement": "net",
           "orderByTime": "ASC",
           "policy": "default",
@@ -194,31 +186,20 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "host",
-              "operator": "=",
-              "value": "test"
-            },
-            {
-              "condition": "AND",
-              "key": "interface",
-              "operator": "=",
-              "value": "h4-eth0"
-            }
-          ]
+          "tags": []
         },
         {
+          "alias": "drop_out",
           "groupBy": [
             {
               "params": [
-                "$__interval"
+                "5m"
               ],
               "type": "time"
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -242,19 +223,7 @@
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "host",
-              "operator": "=",
-              "value": "test"
-            },
-            {
-              "condition": "AND",
-              "key": "interface",
-              "operator": "=",
-              "value": "h4-eth0"
-            }
-          ]
+          "tags": []
         }
       ],
       "thresholds": [],
@@ -278,7 +247,7 @@
       "yaxes": [
         {
           "format": "decbytes",
-          "label": null,
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -299,7 +268,7 @@
       }
     },
     {
-      "datasource": "InfluxDB-2",
+      "datasource": "GAR Project",
       "gridPos": {
         "h": 5,
         "w": 11,
@@ -346,7 +315,7 @@
             },
             {
               "params": [
-                "null"
+                "none"
               ],
               "type": "fill"
             }
@@ -366,23 +335,17 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "derivative"
               }
             ]
           ],
-          "tags": [
-            {
-              "key": "host",
-              "operator": "=",
-              "value": "test"
-            },
-            {
-              "condition": "AND",
-              "key": "interface",
-              "operator": "=",
-              "value": "h4-eth0"
-            }
-          ]
+          "tags": []
         }
       ],
       "timeFrom": null,
@@ -458,6 +421,16 @@
                   "icmp_inechos"
                 ],
                 "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              },
+              {
+                "params": [
+                  "10s"
+                ],
+                "type": "derivative"
               }
             ]
           ],
@@ -640,7 +613,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -658,7 +631,7 @@
     ]
   },
   "timezone": "",
-  "title": "New dashboard Copy",
+  "title": "Project",
   "uid": "AtgqjOPWz",
-  "version": 3
+  "version": 5
 }
