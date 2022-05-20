@@ -1,22 +1,15 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Update VM and get git tool
-sudo apt-get update && apt-get install -y git 
+##################################
+# Install the Ryu SDN Controller #
+##################################
 
-# Install RYU
-echo "Installing RYU..."
+# Update APT's repositories and get Ryu basically.
+sudo apt-get update && apt-get install -y python3 python3-pip python3-ryu
 
-# install Ryu dependencies
-sudo apt-get install -yq python python3 python-pip
-sudo apt-get install -yq python-dev libffi-dev libssl-dev libxml2-dev libxslt1-dev zlib1g-dev
-  
-# fetch RYU
-git clone git://github.com/osrg/ryu.git ryu
-cd ryu
+###########################
+# Install the SVM Library #
+###########################
 
-# install ryu
-sudo pip install -r tools/pip-requires -r tools/optional-requires
-sudo pip install .
-
-# Add traffic_classifier dependences
+# We just need to download the SKLearn Toolkit really.
 sudo apt install -y python3-sklearn
