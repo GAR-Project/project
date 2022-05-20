@@ -367,6 +367,17 @@ mininet> xterm h1 h2
 mininet> h4 wireshark &
 ```
 
+Please note the above might fail. We're running this demo on macOS and even though we'd started [XQuartz](https://www.xquartz.org) we failed to get the *XTerm* window. We encountered a message related to some bad permissions and whatnot. This all has to do with the fact that `mininet` is ran as `root` (by means of `sudo`). Long story short, you should run this before starting `mininet`:
+
+    sudo cp .Xauthority /root
+
+We also struggled to get *XQuartz* to show the *XTerm* windows on macOS when connecting to the machine with `vagrant ssh test`. In order to try and circumvent that we instead issued:
+
+    # Note the -Y has to do with trusted X11 Forwarding
+    ssh -Y -i .vagrant/machines/test/virtualbox/private_key vagrant@10.0.123.2
+
+Note the above has been 'explained' at the beginning of the document.
+
 <br>
 
 Time to launch `hping3` from **Host1** with the parameters we discussed:
