@@ -29,7 +29,6 @@ The purpose of this project is to develop an artificial intelligence to classify
     + Installing things... again! :weary:
     + Usage
     + Demo time! :tada:
-    + Wanted a video?
 - [Traffic classification with a SVM (**S**upport **V**ector **M**achine)](#traffic-classification-with-a-svm-support-vector-machine)
   * First step: Getting the data collection to work :dizzy_face:
   * Second step: Generating the training datasets
@@ -410,20 +409,6 @@ We then see how the **DoS** attack against **Host4** has been successful. In ord
 * Regular traffic: [`src/normal.py`](https://github.com/GAR-Project/project/blob/master/src/normal.py)
 
 With all this ready to rock we now need to focus on detecting these attacks and seeing how to possibly mitigate them.
-
-</div>
-
-#### Wanted a video?
-
-<div style="text-align: justify">
-
-You can find a video showing the process we described step by step (click the image to follow the link :smirk_cat:). If you stumble upon any questions don't hesitate to contact us! :grin:
-
-<p align="center">
-    <a href="https://www.youtube.com/watch?v=ofZPmV6_y_M">
-        <img src="https://img.youtube.com/vi/ofZPmV6_y_M/0.jpg">
-    </a>
-</p>
 
 </div>
 
